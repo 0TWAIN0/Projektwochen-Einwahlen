@@ -1,5 +1,7 @@
 package informations;
 
+import misc.Print;
+
 public class Kurs {
 	private String name;
 	private String beschreibung;
@@ -8,6 +10,14 @@ public class Kurs {
 	private int jahrgangsberechtigungMax;
 	private int tatsaechlicheKursgroesse;
 	private Schueler[] schuelerliste = new Schueler[0];
+	
+	public Kurs(String name, String beschreibung, int kursgroesse, int jahrgangsberechtigungMin, int jahrgangsberechtigungMax){
+		setName(name);
+		setBeschreibung(beschreibung);
+		setKursgroesse(kursgroesse);
+		setJahrgangsberechtigungMin(jahrgangsberechtigungMin);
+		setJahrgangsberechtigungMax(jahrgangsberechtigungMax);
+	}
 	
 	/**
 	 * @return Der Kursname
@@ -90,12 +100,30 @@ public class Kurs {
 	/**
 	 * @param schuelerliste the schuelerliste to set
 	 */
-	public void setSchuelerliste(Schueler schueler) {
+	public void addSchueler(Schueler schueler) {
+		if (schueler == null){
+			Print.deb("Schueler == null in Kurs.addSchueler()");
+			return;
+		}
 		Schueler[] neueSchuelerliste = new Schueler[schuelerliste.length + 1];
 		for(int i = 0; i<schuelerliste.length;i++){
 			neueSchuelerliste[i] = schuelerliste[i];
 		}
 		neueSchuelerliste[schuelerliste.length] = schueler;
+		this.tatsaechlicheKursgroesse++;
+		schuelerliste = neueSchuelerliste;
+	}
+	
+	public void removeSchueler(Schueler schueler) {
+		Schueler[] neueSchuelerliste = new Schueler[schuelerliste.length - 1];
+		int index = 0;
+		for(int i = 0; i<schuelerliste.length;i++){
+			if (!schuelerliste[i].equals(schueler)){
+				neueSchuelerliste[index] = schuelerliste[i];
+				index++;
+			}
+		}
+		this.tatsaechlicheKursgroesse--;
 		schuelerliste = neueSchuelerliste;
 	}
 	

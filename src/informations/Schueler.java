@@ -128,4 +128,14 @@ public class Schueler extends Jahrgang {
 		this.sessionkey = sessionkey;
 	}
 
+	public boolean equals(Schueler schueler){
+		boolean pass = schueler.passwort.equals(this.passwort);
+		boolean name = schueler.name.equals(this.name);
+		if (pass && name){
+			return true;
+		}
+		return false;
+		
+	}
+	
 }

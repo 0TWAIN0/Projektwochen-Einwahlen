@@ -16,6 +16,16 @@ public class Misc {
 		}
 		return key;
 	}
+	public static int gen(int min, int max) {
+		if (min >= max){
+			return 0;
+		}
+		Random gen = new Random();
+		int key = gen.nextInt(max - min);
+		key += min;
+		return key;
+	}
+	
 	public static String read(String path) throws FileNotFoundException{
 		String inhalt = "";
 		Scanner s = new Scanner(new File(path));

@@ -11,9 +11,9 @@ public class Schueler extends Jahrgang {
 	public boolean online = false;
 	private String sessionkey = null;
 
-	private String erstwunsch;
-	private String zweitwunsch;
-	private String drittwunsch;
+	private Kurs erstwunsch;
+	private Kurs zweitwunsch;
+	private Kurs drittwunsch;
 
 	public Schueler(String name, String passwort, int jahrgang,
 			String schulzweig) {
@@ -56,7 +56,7 @@ public class Schueler extends Jahrgang {
 	/**
 	 * @return Der Erstwunsch
 	 */
-	public String getErstwunsch() {
+	public Kurs getErstwunsch() {
 		return erstwunsch;
 	}
 
@@ -64,14 +64,14 @@ public class Schueler extends Jahrgang {
 	 * @param erstwunsch
 	 *            Der festzulegende Erstwunsch.
 	 */
-	public void setErstwunsch(String erstwunsch) {
+	public void setErstwunsch(Kurs erstwunsch) {
 		this.erstwunsch = erstwunsch;
 	}
 
 	/**
 	 * @return Der Zweitwunsch
 	 */
-	public String getZweitwunsch() {
+	public Kurs getZweitwunsch() {
 		return zweitwunsch;
 	}
 
@@ -79,14 +79,14 @@ public class Schueler extends Jahrgang {
 	 * @param zweitwunsch
 	 *            Der festzulegende Zweitwunsch
 	 */
-	public void setZweitwunsch(String zweitwunsch) {
+	public void setZweitwunsch(Kurs zweitwunsch) {
 		this.zweitwunsch = zweitwunsch;
 	}
 
 	/**
 	 * @return Der Drittwunsch
 	 */
-	public String getDrittwunsch() {
+	public Kurs getDrittwunsch() {
 		return drittwunsch;
 	}
 
@@ -94,7 +94,7 @@ public class Schueler extends Jahrgang {
 	 * @param drittwunsch
 	 *            Der festzulegende Drittwunsch.
 	 */
-	public void setDrittwunsch(String drittwunsch) {
+	public void setDrittwunsch(Kurs drittwunsch) {
 		this.drittwunsch = drittwunsch;
 	}
 

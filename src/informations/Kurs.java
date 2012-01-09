@@ -6,6 +6,9 @@ public class Kurs {
 	private int kursgroesse;
 	private int jahrgangsberechtigungMin;
 	private int jahrgangsberechtigungMax;
+	private int tatsaechlicheKursgroesse;
+	private Schueler[] schuelerliste = new Schueler[0];
+	
 	/**
 	 * @return Der Kursname
 	 */
@@ -65,6 +68,35 @@ public class Kurs {
 	 */
 	public void setJahrgangsberechtigungMax(int jahrgangsberechtigungMax) {
 		this.jahrgangsberechtigungMax = jahrgangsberechtigungMax;
+	}
+	/**
+	 * @return the tatsaechlicheKursgroesse
+	 */
+	public int getTatsaechlicheKursgroesse() {
+		return tatsaechlicheKursgroesse;
+	}
+	/**
+	 * @param tatsaechlicheKursgroesse the tatsaechlicheKursgroesse to set
+	 */
+	public void setTatsaechlicheKursgroesse(int tatsaechlicheKursgroesse) {
+		this.tatsaechlicheKursgroesse = tatsaechlicheKursgroesse;
+	}
+	/**
+	 * @return the schuelerliste
+	 */
+	public Schueler[] getSchuelerliste() {
+		return schuelerliste;
+	}
+	/**
+	 * @param schuelerliste the schuelerliste to set
+	 */
+	public void setSchuelerliste(Schueler schueler) {
+		Schueler[] neueSchuelerliste = new Schueler[schuelerliste.length + 1];
+		for(int i = 0; i<schuelerliste.length;i++){
+			neueSchuelerliste[i] = schuelerliste[i];
+		}
+		neueSchuelerliste[schuelerliste.length] = schueler;
+		schuelerliste = neueSchuelerliste;
 	}
 	
 

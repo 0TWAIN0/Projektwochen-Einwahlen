@@ -1,5 +1,6 @@
 package informations;
 
+import misc.Array;
 import misc.Print;
 
 public class Kurs {
@@ -100,12 +101,17 @@ public class Kurs {
 	/**
 	 * @param schuelerliste the schuelerliste to set
 	 */
-	public void addSchueler(Schueler schueler) {
+	public void addSchueler(Schueler schueler, int flag) {
 		if (schueler == null){
 			Print.deb("Schueler == null in Kurs.addSchueler()");
 			return;
 		}
 		Schueler[] neueSchuelerliste = new Schueler[schuelerliste.length + 1];
+		
+		if (flag == 1){
+			Print.deb("add: " + schueler);
+			Array.show(schuelerliste);
+		}
 		for(int i = 0; i<schuelerliste.length;i++){
 			neueSchuelerliste[i] = schuelerliste[i];
 		}
@@ -114,9 +120,13 @@ public class Kurs {
 		schuelerliste = neueSchuelerliste;
 	}
 	
-	public void removeSchueler(Schueler schueler) {
+	public void removeSchueler(Schueler schueler, int flag) {
 		Schueler[] neueSchuelerliste = new Schueler[schuelerliste.length - 1];
 		int index = 0;
+		if (flag == 1){
+			Print.deb("remove: " + schueler);
+			Array.show(schuelerliste);
+		}
 		for(int i = 0; i<schuelerliste.length;i++){
 			if (!schuelerliste[i].equals(schueler)){
 				neueSchuelerliste[index] = schuelerliste[i];
@@ -127,5 +137,15 @@ public class Kurs {
 		schuelerliste = neueSchuelerliste;
 	}
 	
+	public boolean equals(Kurs k){
+		boolean name = this.name.equals(k.name);
+		boolean beschreibung = this.beschreibung.equals(k.beschreibung);
+		boolean kursgroesse = this.kursgroesse == k.kursgroesse;
+		if (name && beschreibung && kursgroesse){
+			return true;
+		}
+		
+		return false;
+	}
 
 }

@@ -51,7 +51,7 @@ public class Kurs {
 		return kursgroesse;
 	}
 	/**
-	 * @param kursgroeße Die festzulegende Kursgroeße.
+	 * @param kursgroesse Die festzulegende Kursgroesse.
 	 */
 	public void setKursgroesse(int kursgroesse) {
 		this.kursgroesse = kursgroesse;
@@ -99,7 +99,7 @@ public class Kurs {
 		return schuelerliste;
 	}
 	/**
-	 * @param schuelerliste the schuelerliste to set
+	 * @param schueler Der Schueler der hinzugefuegt werden soll
 	 */
 	public void addSchueler(Schueler schueler, int flag) {
 		if (schueler == null){

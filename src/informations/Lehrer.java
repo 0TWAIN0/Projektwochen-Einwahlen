@@ -39,9 +39,7 @@ public class Lehrer {
 	public String getSessionkey() {
 		return sessionkey;
 	}
-	/**
-	 * @param sessionkey the sessionkey to set
-	 */
+
 	public void setSessionkey() {
 		String sessionkey = null;
 		boolean equal = true;

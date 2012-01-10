@@ -10,7 +10,7 @@ public class Wahl {
 		return schuelerList;
 	}
 	/**
-	 * @param schueler the schueler to set
+	 * @param schuelerList the schueler to set
 	 */
 	public void setSchueler(Schueler[] schuelerList) {
 		this.schuelerList = schuelerList;

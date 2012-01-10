@@ -105,10 +105,6 @@ public class Schueler extends Jahrgang {
 		return sessionkey;
 	}
 
-	/**
-	 * @param sessionkey
-	 *            the sessionkey to set
-	 */
 	public void setSessionkey() {
 		String sessionkey = null;
 		boolean equal = true;

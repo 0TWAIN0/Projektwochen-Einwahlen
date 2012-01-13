@@ -2,6 +2,7 @@ package misc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
@@ -51,5 +52,11 @@ public class Misc {
 		}
 		s.close();
 		return inhalt;
+	}
+	public static void write(File f, String text) throws FileNotFoundException{
+		PrintWriter write = new PrintWriter(f);
+		write.println(text);
+		write.flush();
+		write.close();
 	}
 }

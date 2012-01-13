@@ -1,5 +1,8 @@
 package misc;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 /**
  * Sammlung von Methoden zur Informationsausgabe in der Konsole.
  * 
@@ -28,6 +31,7 @@ public class Print {
 	 * @param msg
 	 */
 	public static void deb(String msg) {
+		log(msg);
 		System.out.println("[DEBUG] " + msg);
 	}
 	public static void deb(int msg) {
@@ -38,6 +42,7 @@ public class Print {
 	 * @param msg
 	 */
 	public static void debtab(String msg) {
+		log(msg);
 		System.out.println("        " + msg);
 		
 	}
@@ -47,5 +52,15 @@ public class Print {
 	 */
 	public static void tab(String msg) {
 		System.out.println("        " + msg);
+	}
+	
+	private static void log(String msg){
+		//auswertung.log
+		String path = "auswertung.log";
+		try {
+			Misc.write(new File(path), msg);
+		} catch (FileNotFoundException e) {
+			Print.err("Logfile konnte nicht geöffnet werden! Path: " + path);
+		}
 	}
 }

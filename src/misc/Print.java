@@ -31,7 +31,7 @@ public class Print {
 	 * @param msg
 	 */
 	public static void deb(String msg) {
-		log(msg);
+		//log(msg);
 		System.out.println("[DEBUG] " + msg);
 	}
 	public static void deb(int msg) {
@@ -42,7 +42,7 @@ public class Print {
 	 * @param msg
 	 */
 	public static void debtab(String msg) {
-		log(msg);
+		//log(msg);
 		System.out.println("        " + msg);
 		
 	}
@@ -56,6 +56,7 @@ public class Print {
 	
 	private static void log(String msg){
 		//auswertung.log
+		//TODO Funktioniert noch nicht!
 		String path = "auswertung.log";
 		try {
 			Misc.write(new File(path), msg);

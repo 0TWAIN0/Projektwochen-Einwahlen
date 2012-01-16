@@ -30,7 +30,7 @@ public class Config {
 	private static String[] allowedFiles;
 
 	private static final int DEFAULT_PORT = 80;
-	private static final String DEFAULT_WEBROOT = "default";
+	private static final String DEFAULT_WEBROOT = "web";
 	private static final String DEFAULT_ERROR_PAGE = DEFAULT_WEBROOT
 			+ "/error.html";
 

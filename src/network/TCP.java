@@ -9,8 +9,6 @@ import java.util.Scanner;
 /**
  * Eine Klasse zum Empfangen und Senden von Nachrichten über ein Netzwerk.
  * 
- * @author Jakob Lochner
- *
  */
 public class TCP {
 	

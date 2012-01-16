@@ -16,8 +16,6 @@ import misc.Print;
  * Klasse zum reagieren auf GET-Anfragen und Fehler. Bezogen auf das Hypertext
  * Transfer Protocol.
  * 
- * @author Jakob Lochner
- * 
  */
 public class HTTP {
 	

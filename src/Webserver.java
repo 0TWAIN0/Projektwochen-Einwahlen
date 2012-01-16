@@ -18,8 +18,6 @@ import network.HandleConnections;
 
 /**
  * Hauptklasse des Webservers.
- * 
- * @author jakob
  *
  */
 public class Webserver {

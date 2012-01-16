@@ -8,8 +8,6 @@ import java.util.Scanner;
 /**
  * Klasse zum einlesen und speichern von Konfigurationen
  * 
- * @author Jakob Lochner
- * 
  */
 public class Config {
 

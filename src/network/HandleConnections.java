@@ -12,8 +12,6 @@ import misc.Print;
 /**
  * Hier werden einkommende verarbeitet. 
  * 
- * @author Jakob Lochner
- *
  */
 
 public class HandleConnections implements Runnable {

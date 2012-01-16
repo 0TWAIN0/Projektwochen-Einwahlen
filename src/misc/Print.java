@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 /**
  * Sammlung von Methoden zur Informationsausgabe in der Konsole.
  * 
- * @author Jakob Lochner
- *
  */
 public class Print {
 	/**

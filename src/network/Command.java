@@ -12,11 +12,6 @@ import misc.Config;
 import misc.Misc;
 import misc.Print;
 
-/**
- * 
- * @author Jakob Lochner
- *
- */
 public class Command {
 
 	// TODO THREAD SAVE!!

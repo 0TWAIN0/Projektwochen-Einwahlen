@@ -7,10 +7,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 import misc.Config;
+import misc.Misc;
 import misc.Print;
 
 /**
@@ -174,33 +173,14 @@ public class HTTP {
 	public void error(Socket client, int flag, Thread thread) {
 
 		if (flag == FILE_NOT_FOUND_ERROR) {
-			
-			File f;
-			Scanner file;
 			String data = "";
 			
 			synchronized (HandleConnections.LOCK) {
-				f = new File(errorPage);
-
-				// Datei im Scanner öffnen
 				try {
-					file = new Scanner(f);
-				} catch (FileNotFoundException e1) {
-					Print.err(thread
-							+ " Die Error Seite konnte nicht gefunden werden!");
-					return;
+					data = Misc.read(new File(errorPage));
+				} catch (FileNotFoundException e) {
+					Print.err("ErrorPage not Found!");
 				}
-
-				// Datei auslesen
-				while (true) {
-					try {
-						data = data + file.nextLine();
-					} catch (NoSuchElementException e) {
-						break;
-					}
-				}
-
-				file.close(); // Datei schließen
 			}
 
 			// Senden der Error Page

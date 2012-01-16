@@ -14,10 +14,10 @@ public class Config {
 	private static boolean read = false;
 	
 	public static final String KURS_ERSTELLEN_PAGE = "/teacher.html";
-	public static final String KURS_UEBERSICHT_PAGE = "/overview.htm";
-	public static final String KURS_WAHL_PAGE = "/vote.htm";
-	public static final String SUPER_LEHRER_PAGE = "/admin.htm";
-	public static final String WAHL_ERSTELLEN_PAGE = "/create.htm";
+	public static final String KURS_UEBERSICHT_PAGE = "/overview.html";
+	public static final String KURS_WAHL_PAGE = "/vote.html";
+	public static final String SUPER_LEHRER_PAGE = "/admin.html";
+	public static final String WAHL_ERSTELLEN_PAGE = "/create.html";
 	public static final String START_PAGE = "/login.html";
 
 

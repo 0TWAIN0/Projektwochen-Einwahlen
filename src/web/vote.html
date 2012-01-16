@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<title>Projektwochen Einwahlen</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	</head>
+
+	<body bgcolor="#FFFFFF">
+
+		<div id="Layer2" style="position:absolute; width:599px; height:89px; z-index:2; left: 400px; top: 35px"> 
+		  <p align="center"><font size="+7">Bitte Ausf&uuml;llen</font></p>
+		</div>
+		<div id="Layer5" style="position:absolute; width:599px; z-index:5; left: 400px; top: 140px">
+			<div align="center"><input type="submit" name="proj" value="Projekt &Uuml;bersicht"></div>
+		</div>
+		<div id="Layer5" style="position:absolute; width:599px; z-index:5; left: 400px; top: 200px"> 
+			<form action="vote" name="form1" >
+				<p><div align="center">Erstwunsch: </div>
+				<div align="center"><select name="first">
+					<!--<option>kurs 1asdasd</option>
+			      		<option selected>kurs 2</option> -->
+					%options%
+				</select></div></p>
+
+				<p><div align="center">Zweitwunsch: </div>
+				<div align="center"><select name="sec">
+					%options%
+				</select></p></div>
+
+				<p><div align="center">Drittwunsch: </div>
+				<div align="center"><select name="third">
+					%options%
+				</select></p></div>
+		
+				<div align="center">
+				<input type="submit" value="Abschicken"></div>
+
+			</form>
+		</div>
+	</body>
+</html>

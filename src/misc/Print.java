@@ -1,7 +1,5 @@
 package misc;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * Sammlung von Methoden zur Informationsausgabe in der Konsole.
@@ -52,14 +50,14 @@ public class Print {
 		System.out.println("        " + msg);
 	}
 	
-	private static void log(String msg){
-		//auswertung.log
-		//TODO Funktioniert noch nicht!
-		String path = "auswertung.log";
-		try {
-			Misc.write(new File(path), msg);
-		} catch (FileNotFoundException e) {
-			Print.err("Logfile konnte nicht geöffnet werden! Path: " + path);
-		}
-	}
+//	private static void log(String msg){
+//		//auswertung.log
+//		//TODO Funktioniert noch nicht!
+//		String path = "auswertung.log";
+//		try {
+//			Misc.write(new File(path), msg);
+//		} catch (FileNotFoundException e) {
+//			Print.err("Logfile konnte nicht geöffnet werden! Path: " + path);
+//		}
+//	}
 }

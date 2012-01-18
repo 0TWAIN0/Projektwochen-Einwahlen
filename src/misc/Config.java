@@ -20,6 +20,9 @@ public class Config {
 	public static final String WAHL_ERSTELLEN_PAGE = "/create.html";
 	public static final String START_PAGE = "/login.html";
 
+	public static final int MAXIMAL_KURS_GROESSE = 50;
+	public static final int MAXIMAL_JAHRGANG = 13;
+	public static final int MINIMAL_JAHRGANG = 07;
 
 	private static int port;
 	private static String webroot;

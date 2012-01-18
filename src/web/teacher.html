@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>Projektwochen Einwahl - Kurs erstellen</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	</head>
+
+	<body bgcolor="#FFFFFF">
+
+		<div id="Layer2" style="position:absolute; width:599px; height:89px; z-index:2; left: 400px; top: 35px"> 
+			<p align="center"><font size="+7">Bitte Ausf&uuml;llen</font></p>
+		</div>
+
+		<div id="Layer5" style="position:absolute; width:300px; height:30px; z-index:5; left: 600px; top: 140px"> 
+			<form action="%action%" name="form1" >
+				%hidden% 
+				<p><div align="left">Kursname: </div>
+				<input type="text" name="name" value="%name%"></p>
+
+				<p><div align="left">Kursgr&ouml;&szlig;e: </div>
+				<input type="text" name="size" value="%size%"></p>
+
+				<p><div align="left">Jahrgangsberechtigung:</div>
+				<div align="right">
+				Von <input type="text" name="min" value="%min%"> (Bsp.: 07)<br>
+				Bis <input type="text" name="max" value="%max%"> (Bsp.: 10)
+				</p></div>
+
+				<p><div align="left">Beschreibung:</div>
+				<textarea cols="50" rows="10" name="desc">%desc%</textarea><p>
+		
+				<input type="submit" value="Abschicken">
+			</form>
+		</div>
+	</body>
+</html>

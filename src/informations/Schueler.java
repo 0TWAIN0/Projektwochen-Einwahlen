@@ -3,9 +3,9 @@ package informations;
 import misc.Misc;
 
 public class Schueler extends Jahrgang {
-	
+
 	public static final int SCHUELER = 1;
-	
+
 	private String passwort;
 	private String name;
 	public boolean online = false;
@@ -109,7 +109,9 @@ public class Schueler extends Jahrgang {
 		String sessionkey = null;
 		boolean equal = true;
 		Schueler[] schueler = General.wahl.getSchuelerList();
-		
+		Lehrer[] lehrer = General.lehrer;
+
+
 		while (equal) {
 			sessionkey = Misc.gen(10);
 			equal = false;
@@ -119,19 +121,24 @@ public class Schueler extends Jahrgang {
 					break;
 				}
 			}
+			for (int i = 0; i < lehrer.length; i++) {
+				if (sessionkey.equals(lehrer[i].getSessionkey())) {
+					equal = true;
+					break;
+				}
+			}
 		}
-
 		this.sessionkey = sessionkey;
 	}
 
-	public boolean equals(Schueler schueler){
+	public boolean equals(Schueler schueler) {
 		boolean pass = schueler.passwort.equals(this.passwort);
 		boolean name = schueler.name.equals(this.name);
-		if (pass && name){
+		if (pass && name) {
 			return true;
 		}
 		return false;
-		
+
 	}
-	
+
 }

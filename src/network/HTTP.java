@@ -108,14 +108,26 @@ public class HTTP {
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if(command.equals(COMMAND_CREATE_KURS)){
-				try {
-					Command.protectedFileReqest(client, Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE, arguments, Lehrer.LEHRER, thread);
-				} catch (SecurityException e) {
-					Print.msg(thread + " Fehlgeschlagese Verifikation!");
-					error(client, ACCESS_FORBIDDEN_ERROR, thread);
-				} catch (FileNotFoundException e) {
-					Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
-					error(client, FILE_NOT_FOUND_ERROR, thread);
+				if (arguments.length > 1){
+					try {
+						Command.createKurs(client, arguments, Lehrer.LEHRER, thread);
+					} catch (SecurityException e) {
+						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						error(client, ACCESS_FORBIDDEN_ERROR, thread);
+					} catch (FileNotFoundException e) {
+						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						error(client, FILE_NOT_FOUND_ERROR, thread);
+					}
+				}else{
+					try {
+						Command.protectedFileReqest(client, Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE, arguments, Lehrer.LEHRER, thread);
+					} catch (SecurityException e) {
+						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						error(client, ACCESS_FORBIDDEN_ERROR, thread);
+					} catch (FileNotFoundException e) {
+						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						error(client, FILE_NOT_FOUND_ERROR, thread);
+					}
 				}
 			} else if(command.equals(COMMAND_VOTE)){
 				try {
@@ -146,6 +158,7 @@ public class HTTP {
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				}else{
+					Print.deb(thread + "Es wurde eine fehlerhafte Anfrage empfangen!");
 					error(client, SYNTAX_ERROR, thread);
 				}
 			} 
@@ -162,7 +175,7 @@ public class HTTP {
 	 *            client Socket der Angefragt hat und dem auch geantwortet
 	 *            werden soll.
 	 * @param flag
-	 *            Muss 1 sein bei nicht gefundener Datei und 2 sein bei Syntax
+	 *            Muss 1 sein bei nicht gefundener Datei, 2 sein bei Syntax
 	 *            Error
 	 * @param thread
 	 *            Zur identivizierung des laufenden Threads

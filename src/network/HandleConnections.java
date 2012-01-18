@@ -52,23 +52,25 @@ public class HandleConnections implements Runnable {
 
 		// Empfangene Daten prüfen und entsprechen reagieren
 		if (empfang == "") {
+			Print.deb(Thread.currentThread() + "Es wurde nichts gesendet!");
 			http.error(client, HTTP.SYNTAX_ERROR, Thread.currentThread());
 		}
+		String[] split = null;
 		try {
-			String[] split = empfang.split(" ");
+			split = empfang.split(" ");
 			if (split[0].equalsIgnoreCase("GET")) { // GET Reqest
 				http.get(client, split, Thread.currentThread());
 			} else if (split[1].equalsIgnoreCase("POST")) { // POST Request
 				// http.post(client, empfang);
 				Print.msg("POST REQEST!");
 			} else {
+				Print.deb(Thread.currentThread() + "Es wurde ein unbekannter HTTP-Request gesendet!");
 				http.error(client, HTTP.SYNTAX_ERROR, Thread.currentThread());
 			}
 		} catch (PatternSyntaxException e) {
+			Print.deb(Thread.currentThread() + "Es wurde kein HTTP-Request gesendet!");
 			http.error(client, HTTP.SYNTAX_ERROR, Thread.currentThread());
-		} catch (ArrayIndexOutOfBoundsException e) {
-			http.error(client, HTTP.SYNTAX_ERROR, Thread.currentThread());
-		}
+		} 
 		
 		try {
 			client.close();

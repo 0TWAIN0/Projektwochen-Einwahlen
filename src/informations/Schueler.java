@@ -1,15 +1,11 @@
 package informations;
 
-import misc.Misc;
-
-public class Schueler extends Jahrgang {
+public class Schueler extends User {
 
 	public static final int SCHUELER = 1;
-
-	private String passwort;
-	private String name;
-	public boolean online = false;
-	private String sessionkey = null;
+	
+	private int jahrgang;
+	private String schulzweig = "";
 
 	private Kurs erstwunsch;
 	private Kurs zweitwunsch;
@@ -17,42 +13,40 @@ public class Schueler extends Jahrgang {
 
 	public Schueler(String name, String passwort, int jahrgang,
 			String schulzweig) {
-		this.setPasswort(passwort);
-		this.setName(name);
-		super.setJahrgang(jahrgang);
-		super.setSchulzweig(schulzweig);
+		setPasswort(passwort);
+		setName(name);
+		setJahrgang(jahrgang);
+		setSchulzweig(schulzweig);
+	}
+	
+	/**
+	 * @return Den Jahrgang
+	 */
+	public int getJahrgang() {
+		return jahrgang;
 	}
 
 	/**
-	 * @return Das Passwort.
+	 * @param jahrgang Den belegten Jahrgang
 	 */
-	public String getPasswort() {
-		return passwort;
+	public void setJahrgang(int jahrgang) {
+		this.jahrgang = jahrgang;
+	}
+	
+	/**
+	 * @return den Schulzweig
+	 */
+	public String getSchulzweig() {
+		return schulzweig;
 	}
 
 	/**
-	 * @param passwort
-	 *            Das zu festzulegende Passwort.
+	 * @param schulzweig Der zugehörige Schulzweig (Gymnaisum/Realschule/Hauptschule)
 	 */
-	private void setPasswort(String passwort) {
-		this.passwort = passwort;
+	public void setSchulzweig(String schulzweig) {
+		this.schulzweig = schulzweig;
 	}
-
-	/**
-	 * @return Der Name (Indentifikationsnummer)
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            Der festzulegende Name (Indentifikationsnummer)
-	 */
-	private void setName(String name) {
-		this.name = name;
-	}
-
+	
 	/**
 	 * @return Der Erstwunsch
 	 */
@@ -97,48 +91,4 @@ public class Schueler extends Jahrgang {
 	public void setDrittwunsch(Kurs drittwunsch) {
 		this.drittwunsch = drittwunsch;
 	}
-
-	/**
-	 * @return the sessionkey
-	 */
-	public String getSessionkey() {
-		return sessionkey;
-	}
-
-	public void setSessionkey() {
-		String sessionkey = null;
-		boolean equal = true;
-		Schueler[] schueler = General.wahl.getSchuelerList();
-		Lehrer[] lehrer = General.lehrer;
-
-
-		while (equal) {
-			sessionkey = Misc.gen(10);
-			equal = false;
-			for (int i = 0; i < schueler.length; i++) {
-				if (sessionkey.equals(schueler[i].getSessionkey())) {
-					equal = true;
-					break;
-				}
-			}
-			for (int i = 0; i < lehrer.length; i++) {
-				if (sessionkey.equals(lehrer[i].getSessionkey())) {
-					equal = true;
-					break;
-				}
-			}
-		}
-		this.sessionkey = sessionkey;
-	}
-
-	public boolean equals(Schueler schueler) {
-		boolean pass = schueler.passwort.equals(this.passwort);
-		boolean name = schueler.name.equals(this.name);
-		if (pass && name) {
-			return true;
-		}
-		return false;
-
-	}
-
 }

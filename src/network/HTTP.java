@@ -40,6 +40,8 @@ public class HTTP {
 	private static final String COMMAND_LOGIN = "/login";
 	private static final String COMMAND_CREATE_KURS = "/create";
 	private static final String COMMAND_VOTE = "/vote";
+	private static final String COMMAND_CREATE_WAHL = "/createwahl";
+
 
 
 	/**
@@ -121,6 +123,28 @@ public class HTTP {
 				}else{
 					try {
 						Command.protectedFileReqest(client, Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE, arguments, Lehrer.LEHRER, thread);
+					} catch (SecurityException e) {
+						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						error(client, ACCESS_FORBIDDEN_ERROR, thread);
+					} catch (FileNotFoundException e) {
+						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						error(client, FILE_NOT_FOUND_ERROR, thread);
+					}
+				}
+			} else if(command.equals(COMMAND_CREATE_WAHL)){
+				if (arguments.length > 1){
+					try {
+						Command.createWahl(client, arguments, thread);
+					} catch (SecurityException e) {
+						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						error(client, ACCESS_FORBIDDEN_ERROR, thread);
+					} catch (FileNotFoundException e) {
+						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						error(client, FILE_NOT_FOUND_ERROR, thread);
+					}
+				}else{
+					try {
+						Command.protectedFileReqest(client, Config.getWebroot() + Config.WAHL_ERSTELLEN_PAGE, arguments, Lehrer.LEHRER, thread);
 					} catch (SecurityException e) {
 						Print.msg(thread + " Fehlgeschlagese Verifikation!");
 						error(client, ACCESS_FORBIDDEN_ERROR, thread);

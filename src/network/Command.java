@@ -8,6 +8,7 @@ import informations.Schueler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Calendar;
 
 import misc.Config;
 import misc.Misc;
@@ -16,6 +17,239 @@ import misc.Print;
 public class Command {
 
 	// TODO THREAD SAVE!!
+	
+	public static void createWahl(Socket client, String[] args,
+			Thread thread) throws SecurityException, FileNotFoundException{
+		if (args == null){
+			throw new SecurityException("Der Benutzer konnte nicht verifiziert werden!");
+		}
+		
+		String[][] arguments = handleArgs(args);
+		String sessionkey = null;
+		
+		String date = "";
+		Calendar cal = Calendar.getInstance();
+		int g07 = 0;
+		int g08 = 0;
+		int g09 = 0;
+		int g10 = 0;
+		int g11 = 0;
+		int g12 = 0;
+		
+		int r07 = 0;
+		int r08 = 0;
+		int r09 = 0;
+		int r10 = 0;
+		
+		int h07 = 0;
+		int h08 = 0;
+		int h09 = 0;
+		int h10 = 0;
+		
+		int teacher = 0;
+		
+		//Auslesen der Argumente
+		for (int i = 0; i < arguments.length; i++) {
+			if (arguments[i][0].equals("sk")) {
+				sessionkey = arguments[i][1];
+			}else if (arguments[i][0].equals("date")) {
+				date = arguments[i][1];
+			} else if (arguments[i][0].equals("G07")) {
+				try{
+					g07 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					g07 = 0;
+				}
+			} else if (arguments[i][0].equals("G08")) {
+				try{
+					g08 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					g08 = 0;
+				}
+			} else if (arguments[i][0].equals("G09")) {
+				try{
+					g09 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					g09 = 0;
+				}
+			} else if (arguments[i][0].equals("G10")) {
+				try{
+					g10 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					g10 = 0;
+				}
+			} else if (arguments[i][0].equals("G11")) {
+				try{
+					g11 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					g11 = 0;
+				}
+			} else if (arguments[i][0].equals("G12")) {
+				try{
+					g12 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					g12 = 0;
+				}
+			} else if (arguments[i][0].equals("R07")) {
+				try{
+					r07 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					r07 = 0;
+				}
+			} else if (arguments[i][0].equals("R08")) {
+				try{
+					r08 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					r08 = 0;
+				}
+			} else if (arguments[i][0].equals("R09")) {
+				try{
+					r09 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					r09 = 0;
+				}
+			} else if (arguments[i][0].equals("R10")) {
+				try{
+					r10 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					r10 = 0;
+				}
+			} else if (arguments[i][0].equals("H07")) {
+				try{
+					h07 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					h07 = 0;
+				}
+			} else if (arguments[i][0].equals("H08")) {
+				try{
+					h08 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					h08 = 0;
+				}
+			} else if (arguments[i][0].equals("H09")) {
+				try{
+					h09 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					h09 = 0;
+				}
+			} else if (arguments[i][0].equals("H10")) {
+				try{
+					h10 = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					h10 = 0;
+				}
+			} else if (arguments[i][0].equals("teacher")) {
+				try{
+					teacher = Integer.valueOf(arguments[i][1]);
+				}catch(NumberFormatException e){
+					teacher = 0;
+				}
+			} 
+		}
+		
+		//Ueberpruefung des Sessionkeys
+		if (sessionkey.equals(General.admin.getSessionkey())){
+			throw new SecurityException("Der Benutzer konnte nicht verifiziert werden!");
+		}
+		
+		Print.deb(thread + "Nutzer verifiziert!");
+		
+		//Eingaben auf Fehler pruefen
+		String errorMessage = "";
+		if (date.equals("")){
+			errorMessage = errorMessage + "Es wurde kein Einwahlschluss angegeben!%0A";
+		}else{
+			String[] split = date.split("\\.");
+			if (split.length != 3){
+				Print.deb("Falsches Datum: " + date + " split.lenght=" + split.length);
+				errorMessage = errorMessage + "Es wurde ein falscher Einwahlschluss angegeben! (dd:mm:yy)%0A";
+			}else{
+				try{
+					int year = Integer.valueOf(split[2]);
+					int month = Integer.valueOf(split[1]);
+					int day = Integer.valueOf(split[0]);
+					cal.clear();
+					cal.set(year, month-1, day);
+					if (cal.before(Calendar.getInstance())){
+						errorMessage = errorMessage + "Es wurde ein falscher Einwahlschluss angegeben! Das Datum lieg in der Vergangenheit!%0A";
+					}
+				}catch (NumberFormatException e){
+					Print.deb("Falsches Datum: " + date);
+					errorMessage = errorMessage + "Es wurde ein falscher Einwahlschluss angegeben!%0A";
+				}
+			}
+		}
+		
+		if (g07 < 0 || g08 < 0 || g09 < 0 || g10 < 0 || g11 < 0 || g12 < 0 || r07 < 0 || r08 < 0 || r09 < 0 || r10 < 0 || h07 < 0 || h08 < 0 || h09 < 0 || h10 < 0){
+			errorMessage = errorMessage + "Es wurde eine negative Sch%FCleranzahl angegeben!%0A";
+		}
+		
+		if ((g07+g08+g09+g10+g11+g12+r07+r08+r09+r10+h07+h08+h09+h10) <= 0){
+			errorMessage = errorMessage + "Es wurden keine Sch%FCler angegeben!%0A";
+		}
+			
+		if (teacher < 0){
+			errorMessage = errorMessage + "Es wurde eine negative Lehreranzahl angegeben!%0A";
+		}
+		
+		
+		//Fehler Ausgabe
+		if (!errorMessage.equals("")){
+			errorMessage = "Es wurde ein Fehler in den angegebenen Daten gefunden!%0A%0A" + errorMessage;
+			Print.deb(thread + errorMessage);
+			String page = Misc.read(Config.getWebroot()
+					+ Config.WAHL_ERSTELLEN_PAGE);
+			
+			page = page.replaceAll("%date%", date);
+			
+			page = page.replaceAll("%G07%", String.valueOf(g07));
+			page = page.replaceAll("%G08%", String.valueOf(g08));
+			page = page.replaceAll("%G09%", String.valueOf(g09));
+			page = page.replaceAll("%G10%", String.valueOf(g10));
+			page = page.replaceAll("%G11%", String.valueOf(g11));
+			page = page.replaceAll("%G12%", String.valueOf(g12));
+			
+			page = page.replaceAll("%R07%", String.valueOf(r07));
+			page = page.replaceAll("%R08%", String.valueOf(r08));
+			page = page.replaceAll("%R09%", String.valueOf(r09));
+			page = page.replaceAll("%R10%", String.valueOf(r10));
+			
+			page = page.replaceAll("%H07%", String.valueOf(h07));
+			page = page.replaceAll("%H08%", String.valueOf(h08));
+			page = page.replaceAll("%H09%", String.valueOf(h09));
+			page = page.replaceAll("%H10%", String.valueOf(h10));
+			
+			page = page.replaceAll("%teacher%",String.valueOf(teacher));
+			page = page.replaceAll("%hidden%", "<input type=hidden name='sk' value='"+ sessionkey +"'>");
+			
+			try {
+				Print.msg(thread + " Kurs erstellen failed!");
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client, page + "<script>alert(unescape('" + errorMessage + "'));</script>");
+			} catch (IOException e) {
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
+		}else{
+			//General.wahl.addKurs(new Kurs(name, description, size, min, max));
+			Print.deb(thread + "Wahl wurder erfolgreich hinzugefügt!");
+			try {
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client,"<script>alert('Die Wahl wurde erfolgreich erstellt!');</script>");
+			} catch (IOException e) {
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
+		}
+	}
+	
+	/**
+	 * Methode zum erstellen eines Kurses
+	 * @param client 
+	 * @param args Vom Client übergebenen Argumente
+	 * @param userType Typ des Nutzers (Schüler/Lehrer)
+	 * @param thread
+	 * @throws SecurityException Nutzer konnte nicht authentifiziert werden
+	 * @throws FileNotFoundException
+	 */
 	public static void createKurs(Socket client, String[] args, int userType,
 			Thread thread) throws SecurityException, FileNotFoundException{
 		if (args == null){
@@ -171,7 +405,7 @@ public class Command {
 				}
 			}
 			if (!login) {
-				Lehrer[] lehrerList = General.lehrer;
+				Lehrer[] lehrerList = General.wahl.getLehrerList();
 				for (int l = 0; l < lehrerList.length; l++) {
 					if (lehrerList[l].getName().equals(username)
 							&& lehrerList[l].getPasswort().equals(passwort)) {
@@ -273,7 +507,31 @@ public class Command {
 			inhalt = inhalt.replaceAll("%min%", String.valueOf(""));
 			inhalt = inhalt.replaceAll("%max%", String.valueOf(""));
 			inhalt = inhalt.replaceAll("%desc%", "");
-			inhalt = inhalt.replaceAll("%action%", "create?sk=" + sessionkey);
+			inhalt = inhalt.replaceAll("%action%", "create");
+			inhalt = inhalt.replaceAll("%hidden%", "<input type=hidden name='sk' value='"+ sessionkey +"'>");
+		}
+		
+		if (filePath.equals(Config.getWebroot() + Config.WAHL_ERSTELLEN_PAGE)){
+			inhalt = inhalt.replaceAll("%date%", "dd:mm:yy");
+			
+			inhalt = inhalt.replaceAll("%G07%","");
+			inhalt = inhalt.replaceAll("%G08%","");
+			inhalt = inhalt.replaceAll("%G09%","");
+			inhalt = inhalt.replaceAll("%G10%","");
+			inhalt = inhalt.replaceAll("%G11%","");
+			inhalt = inhalt.replaceAll("%G12%","");
+			
+			inhalt = inhalt.replaceAll("%R07%","");
+			inhalt = inhalt.replaceAll("%R08%","");
+			inhalt = inhalt.replaceAll("%R09%","");
+			inhalt = inhalt.replaceAll("%R10%","");
+			
+			inhalt = inhalt.replaceAll("%H07%","");
+			inhalt = inhalt.replaceAll("%H08%","");
+			inhalt = inhalt.replaceAll("%H09%","");
+			inhalt = inhalt.replaceAll("%H10%","");
+			
+			inhalt = inhalt.replaceAll("%teacher%","");
 			inhalt = inhalt.replaceAll("%hidden%", "<input type=hidden name='sk' value='"+ sessionkey +"'>");
 		}
 		
@@ -343,7 +601,7 @@ public class Command {
 		
 		boolean authorized = false;
 		if (userType == Lehrer.LEHRER){
-			Lehrer[] userList = General.lehrer;
+			Lehrer[] userList = General.wahl.getLehrerList();
 			for (int i = 0; i < userList.length;i++){
 				if (sessionkey.equals(userList[i].getSessionkey())){
 					if (userList[i].online){

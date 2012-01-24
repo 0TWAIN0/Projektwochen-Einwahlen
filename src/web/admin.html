@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>Projektwochen Einwahlen - Admin Interface</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	</head>
+
+	<body bgcolor="#FFFFFF">
+		<div id="Layer1" style="position:absolute; width:599px; height:89px; z-index:7; left: 400px; top: 35px"> 
+			<p align="center"><font size="+7">Administrator </font></p>
+		</div>
+
+		<div id="Layer2" style="position:absolute;z-index:8; left: 539px; top: 191px"> 
+		 	<form action="%add%" name="form1" >
+				%hidden%
+		   		<input type="submit" value="Kurs hinzuf&uuml;gen">
+			</form>
+		</div>
+		<div id="Layer3" style="position:absolute;z-index:8; left: 670px; top: 191px"> 
+			<form action="%change%" name="form2" >
+				%hidden%				
+				<select name="changekurs">
+					<!--<option>kurs 1asdasd</option>
+			      		<option selected>kurs 2</option> -->
+					%kursliste%
+		      		</select>
+		    		<input type="submit" name="change" value="Kurs &auml;ndern">
+		  	</form>
+		</div>
+
+		<div id="Layer4" style="position:absolute;z-index:9; left: 538px; top: 243px"> 
+			<form action="%overview%" name="form3" >
+				%hidden%
+		    		<input type="submit" name="view" value="Kurs&uuml;bersicht">
+		  	</form>
+		</div>
+
+		<div id="Layer5" style="position:absolute; z-index:10; left: 538px; top: 281px"> 
+		  	<form action="%delkurs%" name="form4" >
+				%hidden%
+		    		<p>
+		      		<select name="delkurs">
+					%kursliste%
+		      		</select>
+				<input type="submit" name="del" value="Kurs l&ouml;schen">
+				</p>
+		   	</form>
+		</div>
+		<div id="Layer6" style="position:absolute;  z-index:11; left: 538px; top: 424px"> 
+		  	<form action="%create%" name="form5" >
+				%hidden%
+		    		<input type="submit" value="Wahl erstellen">
+		  	</form>
+		</div>
+		<div id="Layer7" style="position:absolute; z-index:11; left: 650px; top: 424px"> 
+		  	<form action="%cancel%" name="form6" >
+				%hidden%
+		    		<input type="submit" name="cancel" value="Wahl abbrechen">
+		  	</form>
+		</div>
+	</body>
+</html>

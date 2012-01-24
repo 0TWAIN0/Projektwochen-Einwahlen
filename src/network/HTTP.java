@@ -1,5 +1,6 @@
 package network;
 
+import informations.Admin;
 import informations.Lehrer;
 import informations.Schueler;
 
@@ -18,31 +19,31 @@ import misc.Print;
  * 
  */
 public class HTTP {
-	
-	//Speicher Informationen
+
+	// Speicher Informationen
 	private final String webroot;
 	private final String errorPage;
-	
-	//HTTP Header
+
+	// HTTP Header
 	public static final String HEADER_OK = "HTTP/1.1 200 OK\r\n";
 	public static final String HEADER_FILE_NOT_FOUND = "HTTP/1.1 404 Not Found\r\n";
 	public static final String HEADER_ACCESS_FORBIDDEN = "HTTP/1.1 403 Access Forbidden\r\n";
 	public static final String HEADER_BAD_REQUEST = "HTTP/1.1 400 Bad Request\r\n";
 	public static final String HEADER_MOVED = "HTTP/1.1 302 Moved Temporarily";
-	
-	//ERROR Typen
+
+	// ERROR Typen
 	public static final int FILE_NOT_FOUND_ERROR = 1;
 	public static final int SYNTAX_ERROR = 2;
 	public static final int ACCESS_FORBIDDEN_ERROR = 3;
 
-	//Befehle
+	// Befehle
 	private static final String COMMAND_START_PAGE = "/";
 	private static final String COMMAND_LOGIN = "/login";
 	private static final String COMMAND_CREATE_KURS = "/create";
 	private static final String COMMAND_VOTE = "/vote";
 	private static final String COMMAND_CREATE_WAHL = "/createwahl";
-
-
+	private static final String COMMAND_ADMIN_INTERFACE = "/admin";
+	private static final String COMMAND_SHOW_KURSLIST = "/list";
 
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
@@ -55,7 +56,7 @@ public class HTTP {
 	 *            Zur identivizierung des laufenden Threads
 	 */
 	public void get(Socket client, String[] splitted, Thread thread) {
-		
+
 		// Identifizierung des übergebenen Befehls
 		if (splitted[1].equals(COMMAND_START_PAGE)) {
 			Print.deb(thread + " Anfrage: Startpage");
@@ -102,77 +103,121 @@ public class HTTP {
 			}
 
 			// Reaktions auf Befehl
-			if (command.equals(COMMAND_LOGIN)) {
+			if (command.equals(COMMAND_LOGIN)) { 
 				try {
 					Command.login(client, arguments, thread);
 				} catch (FileNotFoundException e) {
 					Print.err(thread + " Fehler beim Lesen einer Datei");
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
-			} else if(command.equals(COMMAND_CREATE_KURS)){
-				if (arguments.length > 1){
+			} else if (command.equals(COMMAND_CREATE_KURS)) {
+				if (arguments.length > 1) {
 					try {
-						Command.createKurs(client, arguments, Lehrer.LEHRER, thread);
+						Command.createKurs(client, arguments, Lehrer.LEHRER,
+								thread);
 					} catch (SecurityException e) {
-						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						Print.msg(thread + " Fehlgeschlagene Verifikation!");
 						error(client, ACCESS_FORBIDDEN_ERROR, thread);
 					} catch (FileNotFoundException e) {
-						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						Print.err(thread + " Datei wurde nicht gefunden: "
+								+ Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
-				}else{
+				} else {
 					try {
-						Command.protectedFileReqest(client, Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE, arguments, Lehrer.LEHRER, thread);
+						Command.protectedFileReqest(client, Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE, arguments,
+								Lehrer.LEHRER, thread);
 					} catch (SecurityException e) {
-						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						Print.msg(thread + " Fehlgeschlagene Verifikation!");
 						error(client, ACCESS_FORBIDDEN_ERROR, thread);
 					} catch (FileNotFoundException e) {
-						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						Print.err(thread + " Datei wurde nicht gefunden: "
+								+ Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				}
-			} else if(command.equals(COMMAND_CREATE_WAHL)){
-				if (arguments.length > 1){
+			} else if (command.equals(COMMAND_ADMIN_INTERFACE)) {
+				if (arguments.length > 1) {
+					try {
+						Command.admin(client, arguments, thread);
+					} catch (SecurityException e) {
+						Print.msg(thread + " Fehlgeschlagene Verifikation!");
+						error(client, ACCESS_FORBIDDEN_ERROR, thread);
+					} catch (FileNotFoundException e) {
+						Print.err(thread + " Datei wurde nicht gefunden: "
+								+ Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE);
+						error(client, FILE_NOT_FOUND_ERROR, thread);
+					}
+				} else {
+					try {
+						Command.protectedFileReqest(client, Config.getWebroot()
+								+ Config.SUPER_LEHRER_PAGE, arguments,
+								Admin.ADMIN, thread);
+					} catch (SecurityException e) {
+						Print.msg(thread + " Fehlgeschlagene Verifikation!");
+						error(client, ACCESS_FORBIDDEN_ERROR, thread);
+					} catch (FileNotFoundException e) {
+						Print.err(thread + " Datei wurde nicht gefunden: "
+								+ Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE);
+						error(client, FILE_NOT_FOUND_ERROR, thread);
+					}
+				}
+			} else if (command.equals(COMMAND_CREATE_WAHL)) {
+				if (arguments.length > 1) {
 					try {
 						Command.createWahl(client, arguments, thread);
 					} catch (SecurityException e) {
-						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						Print.msg(thread + " Fehlgeschlagene Verifikation!");
 						error(client, ACCESS_FORBIDDEN_ERROR, thread);
 					} catch (FileNotFoundException e) {
-						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						Print.err(thread + " Datei wurde nicht gefunden: "
+								+ Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
-				}else{
+				} else {
 					try {
-						Command.protectedFileReqest(client, Config.getWebroot() + Config.WAHL_ERSTELLEN_PAGE, arguments, Lehrer.LEHRER, thread);
+						Command.protectedFileReqest(client, Config.getWebroot()
+								+ Config.WAHL_ERSTELLEN_PAGE, arguments,
+								Lehrer.LEHRER, thread);
 					} catch (SecurityException e) {
-						Print.msg(thread + " Fehlgeschlagese Verifikation!");
+						Print.msg(thread + " Fehlgeschlagene Verifikation!");
 						error(client, ACCESS_FORBIDDEN_ERROR, thread);
 					} catch (FileNotFoundException e) {
-						Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+						Print.err(thread + " Datei wurde nicht gefunden: "
+								+ Config.getWebroot()
+								+ Config.KURS_ERSTELLEN_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				}
-			} else if(command.equals(COMMAND_VOTE)){
+			} else if (command.equals(COMMAND_VOTE)) {
 				try {
-					Command.protectedFileReqest(client, Config.getWebroot() + Config.KURS_WAHL_PAGE, arguments, Schueler.SCHUELER, thread);
+					Command.protectedFileReqest(client, Config.getWebroot()
+							+ Config.KURS_WAHL_PAGE, arguments,
+							Schueler.SCHUELER, thread);
 				} catch (SecurityException e) {
-					Print.msg(thread + " Fehlgeschlagese Verifikation!");
+					Print.msg(thread + " Fehlgeschlagene Verifikation!");
 					error(client, ACCESS_FORBIDDEN_ERROR, thread);
 				} catch (FileNotFoundException e) {
-					Print.err(thread + " Datei wurde nicht gefunden: " + Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+					Print.err(thread + " Datei wurde nicht gefunden: "
+							+ Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else {
 				command = webroot + command;
-				boolean allowed =false;
-				for (int i = 0; i < Config.getAllowedFiles().length;i++){
-					if (command.equals(Config.getAllowedFiles()[i])){
+				boolean allowed = false;
+				for (int i = 0; i < Config.getAllowedFiles().length; i++) {
+					if (command.equals(Config.getAllowedFiles()[i])) {
 						allowed = true;
 						break;
 					}
 				}
-				if (allowed){
+				if (allowed) {
 					Print.deb(thread + " Allowed File Request: " + command);
 					try {
 						Command.allowedFileReqest(client, command, thread);
@@ -181,11 +226,12 @@ public class HTTP {
 								+ command);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
-				}else{
-					Print.deb(thread + "Es wurde eine fehlerhafte Anfrage empfangen!");
+				} else {
+					Print.deb(thread
+							+ "Es wurde eine fehlerhafte Anfrage empfangen!");
 					error(client, SYNTAX_ERROR, thread);
 				}
-			} 
+			}
 
 		}
 
@@ -209,7 +255,7 @@ public class HTTP {
 
 		if (flag == FILE_NOT_FOUND_ERROR) {
 			String data = "";
-			
+
 			synchronized (HandleConnections.LOCK) {
 				try {
 					data = Misc.read(new File(errorPage));
@@ -241,7 +287,7 @@ public class HTTP {
 						+ " fehlgeschlagen!");
 				e.printStackTrace();
 			}
-		}else if (flag == ACCESS_FORBIDDEN_ERROR) {
+		} else if (flag == ACCESS_FORBIDDEN_ERROR) {
 			// Senden der des Errors
 			Print.msg(thread + " Sending Access Forbidden Error to "
 					+ client.getInetAddress());

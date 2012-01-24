@@ -8,7 +8,6 @@ import misc.Print;
 public class General {
 	public static Wahl wahl; // TODO Wahl erstellen
 	private Calendar date = Calendar.getInstance();
-	public static Admin admin = new Admin();
 
 	public General() {
 		Lehrer[] lehrer = new Lehrer[10];
@@ -22,6 +21,9 @@ public class General {
 		for (int i = 0; i < schueler.length; i++) {
 			schueler[i] = new Schueler("Schueler" + i, Misc.gen(5), 7, "gym");
 			Print.deb(schueler[i].getName() + "  " + schueler[i].getPasswort());
+		}
+		
+		for (int i = 1; i <= 50; i++){
 		}
 		
 		date.set(2012, 8, 6);

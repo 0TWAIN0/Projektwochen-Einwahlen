@@ -1,6 +1,12 @@
 package informations;
 
 public class Admin extends User {
-	public static final String name = "admin";
-	public static final String pass = "a6s5f48eaxS";
+	private static final String name = "admin";
+	private static final String pass = "123456";
+	public static final int ADMIN = 2;
+	
+	public Admin(){
+		super.setName(name);
+		super.setPasswort(pass);
+	}
 }

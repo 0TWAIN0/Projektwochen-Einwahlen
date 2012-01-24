@@ -137,7 +137,11 @@ public class Kurs {
 		schuelerliste = neueSchuelerliste;
 	}
 	
-	public boolean equals(Kurs k){
+	public boolean equals(Object obj){
+		if (!(obj instanceof Kurs)){
+			return false;
+		}
+		Kurs k = (Kurs)obj;
 		boolean name = this.name.equals(k.name);
 		boolean beschreibung = this.beschreibung.equals(k.beschreibung);
 		boolean kursgroesse = this.kursgroesse == k.kursgroesse;

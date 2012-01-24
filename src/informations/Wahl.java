@@ -7,6 +7,9 @@ public class Wahl {
 	private Lehrer[] lehrerList;
 	private Kurs[] kursListe = new Kurs[0];
 	private Calendar date;
+	public final Admin admin = new Admin();
+	private boolean running = false;
+	//private String endDate;
 	/* - Schüler Liste und Lehrer Liste sollten im Konstuktor angegeben werden
 	 * 		- späteres verändern nicht möglich
 	 * - Variable mit Enddatum  
@@ -19,8 +22,6 @@ public class Wahl {
 		setLehrerListe(l);
 	}
 	
-	private boolean running = false;
-	//private String endDate;
 	/**
 	 * @return the schueler
 	 */
@@ -63,11 +64,11 @@ public class Wahl {
 	}
 	
 	public void addKurs(Kurs kurs){
-		
+		//TODO ADDKURS
 	}
 	
 	public void delKurs(Kurs kurs){
-		
+		//TODO DELKURS
 	}
 
 	/**

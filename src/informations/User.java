@@ -67,7 +67,7 @@ public class User {
 					break;
 				}
 			}
-			if (sessionkey.equals(General.admin.getSessionkey())) {
+			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
 				equal = true;
 			}
 		}

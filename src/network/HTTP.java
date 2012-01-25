@@ -3,6 +3,7 @@ package network;
 import informations.Admin;
 import informations.Lehrer;
 import informations.Schueler;
+import informations.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +44,7 @@ public class HTTP {
 	private static final String COMMAND_VOTE = "/vote";
 	private static final String COMMAND_CREATE_WAHL = "/createwahl";
 	private static final String COMMAND_ADMIN_INTERFACE = "/admin";
-	private static final String COMMAND_SHOW_KURSLIST = "/list";
+	private static final String COMMAND_SHOW_KURSLIST = "/overview";
 
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
@@ -103,11 +104,24 @@ public class HTTP {
 			}
 
 			// Reaktions auf Befehl
-			if (command.equals(COMMAND_LOGIN)) { 
+			if (command.equals(COMMAND_LOGIN)) {
 				try {
 					Command.login(client, arguments, thread);
 				} catch (FileNotFoundException e) {
 					Print.err(thread + " Fehler beim Lesen einer Datei");
+					error(client, FILE_NOT_FOUND_ERROR, thread);
+				}
+			} else if (command.equals(COMMAND_SHOW_KURSLIST)) {
+				try {
+					Command.protectedFileReqest(client, Config.getWebroot()
+							+ Config.KURS_UEBERSICHT_PAGE, arguments,
+							User.USER, thread);
+				} catch (SecurityException e) {
+					Print.msg(thread + " Fehlgeschlagene Verifikation!");
+					error(client, ACCESS_FORBIDDEN_ERROR, thread);
+				} catch (FileNotFoundException e) {
+					Print.err(thread + " Datei wurde nicht gefunden: "
+							+ Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if (command.equals(COMMAND_CREATE_KURS)) {

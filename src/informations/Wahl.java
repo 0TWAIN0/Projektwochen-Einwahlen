@@ -2,6 +2,8 @@ package informations;
 
 import java.util.Calendar;
 
+import misc.Print;
+
 public class Wahl {
 	private Schueler[] schuelerList;
 	private Lehrer[] lehrerList;
@@ -64,11 +66,46 @@ public class Wahl {
 	}
 	
 	public void addKurs(Kurs kurs){
-		//TODO ADDKURS
+		if (kurs == null){
+			Print.deb("Kurs == null in Wahl.addKurs()");
+			return;
+		}
+		Kurs[] neueKursliste = new Kurs[kursListe.length + 1];
+		for(int i = 0; i<kursListe.length;i++){
+			neueKursliste[i] = kursListe[i];
+		}
+		neueKursliste[kursListe.length] = kurs;
+		kursListe = neueKursliste;
 	}
 	
 	public void delKurs(Kurs kurs){
-		//TODO DELKURS
+		if (kurs == null){
+			Print.deb("Kurs == null in Wahl.delKurs()");
+			return;
+		}
+		if (kursListe.length == 0){
+			Print.deb("Es kann kein Kurs gelöscht werden, da keine Kurse existieren!");
+			return;
+		}
+		boolean found = false;
+		for(int i = 0; i<kursListe.length;i++){
+			if (kursListe[i].equals(kurs)){
+				found = true;
+			}
+		}
+		if (!found) {
+			Print.deb("Kurs zum löschen konnte nicht gefunden werden!");
+			return;
+		}
+		Kurs[] neueKursliste = new Kurs[kursListe.length - 1];
+		int index = 0;
+		for(int i = 0; i<kursListe.length;i++){
+			if (!kursListe[i].equals(kurs)){
+				neueKursliste[index] = kursListe[i];
+				index++;
+			}
+		}
+		kursListe = neueKursliste;
 	}
 
 	/**

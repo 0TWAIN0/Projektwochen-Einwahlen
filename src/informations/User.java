@@ -8,6 +8,7 @@ public class User {
 	private String passwort;
 	private String name;
 	public boolean online = false;
+	public static final int USER = 3;
 	
 	/**
 	 * @return the passwort

@@ -5,6 +5,7 @@ import informations.General;
 import informations.Kurs;
 import informations.Lehrer;
 import informations.Schueler;
+import informations.User;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,8 +22,8 @@ public class Command {
 
 	public static void admin(Socket client, String[] args, Thread thread)
 			throws SecurityException, FileNotFoundException {
-		
-		//Ueberpruefung des Sessionkeys und der anderen Argumente
+
+		// Ueberpruefung des Sessionkeys und der anderen Argumente
 		if (args == null) {
 			throw new SecurityException(
 					"Der Benutzer konnte nicht verifiziert werden!");
@@ -33,7 +34,6 @@ public class Command {
 
 		boolean change = false;
 		String changeKurs = "";
-		boolean overview = false;
 		boolean delete = false;
 		String delKurs = "";
 		boolean cancel = false;
@@ -45,8 +45,6 @@ public class Command {
 				change = true;
 			} else if (arguments[i][0].equals("changekurs")) {
 				changeKurs = arguments[i][1];
-			} else if (arguments[i][0].equals("view")) {
-				overview = true;
 			} else if (arguments[i][0].equals("del")) {
 				delete = true;
 			} else if (arguments[i][0].equals("delkurs")) {
@@ -61,14 +59,14 @@ public class Command {
 					"Der Benutzer konnte nicht verifiziert werden! Falscher Sessionkey!");
 		}
 
-		//Untersuchung der Argumente auf Fehler
-		//Bei einem/keinem Fehler wird entsprechend reagiert 
+		// Untersuchung der Argumente auf Fehler
+		// Bei einem/keinem Fehler wird entsprechend reagiert
 		if (change) {
 			String errorMessage = "";
 			if (General.wahl == null) {
 				errorMessage = errorMessage
 						+ "Es wurde noch keine Wahl erstellt!%0A";
-			} 
+			}
 			if (changeKurs.equals("")) {
 				errorMessage = errorMessage
 						+ "Es wurde kein Kurs zum %C4ndern angegeben!%0A";
@@ -84,12 +82,13 @@ public class Command {
 				if (kurs == null) {
 					errorMessage = errorMessage
 							+ "Der Kurs existiert nicht!%0A";
-				} 
+				}
 			}
-			
-			//Fehler wurde gefunden
-			if (!errorMessage.equals("")){
-				String inhalt = Misc.read(Config.getWebroot() + Config.SUPER_LEHRER_PAGE);
+
+			// Fehler wurde gefunden
+			if (!errorMessage.equals("")) {
+				String inhalt = Misc.read(Config.getWebroot()
+						+ Config.SUPER_LEHRER_PAGE);
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
 				String liste = "";
@@ -104,23 +103,26 @@ public class Command {
 					}
 				}
 				inhalt = inhalt.replaceAll("%kursliste%", liste);
-				inhalt = inhalt.replaceAll("%overview%", "admin");
+				inhalt = inhalt.replaceAll("%overview%", "overview.html?sk="
+						+ sessionkey);
 				inhalt = inhalt.replaceAll("%delkurs%", "admin");
 				inhalt = inhalt.replaceAll("%create%", "createwahl");
 				inhalt = inhalt.replaceAll("%cancel%", "admin");
 				inhalt = inhalt.replaceAll("%hidden%",
-						"<input type=hidden name='sk' value='" + sessionkey + "'>");
-				inhalt = inhalt + "<script>alert(unescape('" + errorMessage + "'));</script>";
-				
+						"<input type=hidden name='sk' value='" + sessionkey
+								+ "'>");
+				inhalt = inhalt + "<script>alert(unescape('" + errorMessage
+						+ "'));</script>";
+
 				try {
 					Print.msg(thread + " Kurs ändern failed! Kurs unknown!");
-					
+
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
-				} 
-			}else{ //Kein Fehler wurde gefunden
+				}
+			} else { // Kein Fehler wurde gefunden
 				Kurs[] kursListe = General.wahl.getKursListe();
 				Kurs kurs = null;
 				for (int k = 0; k < kursListe.length; k++) {
@@ -129,7 +131,7 @@ public class Command {
 						break;
 					}
 				}
-				
+
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.KURS_ERSTELLEN_PAGE);
 				inhalt = inhalt.replaceAll("%name%", kurs.getName());
@@ -139,27 +141,22 @@ public class Command {
 						String.valueOf(kurs.getJahrgangsberechtigungMin()));
 				inhalt = inhalt.replaceAll("%max%",
 						String.valueOf(kurs.getJahrgangsberechtigungMax()));
-				inhalt = inhalt
-						.replaceAll("%desc%", kurs.getBeschreibung());
+				inhalt = inhalt.replaceAll("%desc%", kurs.getBeschreibung());
 				inhalt = inhalt.replaceAll("%action%", "create");
-				inhalt = inhalt
-						.replaceAll(
-								"%hidden%",
-								"<input type=hidden name='sk' value='"
-										+ sessionkey
-										+ "'><input type=hidden name='change' value='" + kurs.getName() + "'>");
-				
+				inhalt = inhalt.replaceAll("%hidden%",
+						"<input type=hidden name='sk' value='" + sessionkey
+								+ "'><input type=hidden name='change' value='"
+								+ kurs.getName() + "'>");
+
 				try {
 					Print.msg(thread + " Kurs ändern eingeleitet!");
-					
+
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
-				} 
+				}
 			}
-		} else if (overview) {
-
 		} else if (delete) {
 
 		} else if (cancel) {
@@ -476,6 +473,7 @@ public class Command {
 			} else if (arguments[i][0].equals("desc")) {
 				description = arguments[i][1];
 			} else if (arguments[i][0].equals("change")) {
+				change = true;
 				changeKurs = arguments[i][1];
 			}
 		}
@@ -486,9 +484,9 @@ public class Command {
 		}
 
 		Print.deb(thread + "Nutzer verifiziert!");
-		
-		//Falls der Kurs gesendert werden soll, checken ob der Kurs existiert
-		if (change){
+
+		// Falls der Kurs gesendert werden soll, checken ob der Kurs existiert
+		if (change) {
 			Kurs[] kursListe = General.wahl.getKursListe();
 			Kurs kurs = null;
 			for (int k = 0; k < kursListe.length; k++) {
@@ -498,8 +496,9 @@ public class Command {
 				}
 			}
 			if (kurs == null) {
-				String inhalt = Misc.read(Config.getWebroot() + Config.SUPER_LEHRER_PAGE);
-				
+				String inhalt = Misc.read(Config.getWebroot()
+						+ Config.SUPER_LEHRER_PAGE);
+
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
 				String liste = "";
@@ -513,30 +512,33 @@ public class Command {
 					}
 				}
 				inhalt = inhalt.replaceAll("%kursliste%", liste);
-				inhalt = inhalt.replaceAll("%overview%", "admin");
+				inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+						+ sessionkey);
 				inhalt = inhalt.replaceAll("%delkurs%", "admin");
 				inhalt = inhalt.replaceAll("%create%", "createwahl");
 				inhalt = inhalt.replaceAll("%cancel%", "admin");
 				inhalt = inhalt.replaceAll("%hidden%",
-						"<input type=hidden name='sk' value='" + sessionkey + "'>");
-				inhalt = inhalt + "<script>alert(unescape('Der Kurs konnte nicht gefunden werden!'));</script>";
-				
+						"<input type=hidden name='sk' value='" + sessionkey
+								+ "'>");
+				inhalt = inhalt
+						+ "<script>alert(unescape('Der Kurs konnte nicht gefunden werden!'));</script>";
+
 				try {
 					Print.msg(thread + " Kurs ändern failed! Kurs unknown!");
-					
+
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
-				
+
 				return;
-			} else{
+			} else {
 				kursToChange = kurs;
 			}
 		}
-		
-		//Eingaben ueberpruefen
+
+		// Eingaben ueberpruefen
 		String errorMessage = "";
 		if (name.equals("")) {
 			errorMessage = errorMessage
@@ -564,7 +566,7 @@ public class Command {
 		}
 		Kurs[] kursList = General.wahl.getKursListe();
 		for (int i = 0; i < kursList.length; i++) {
-			if (change && kursList[i].equals(kursToChange)){
+			if (change && kursList[i].equals(kursToChange)) {
 				continue;
 			}
 			if (name.equals(kursList[i].getName())) {
@@ -593,7 +595,7 @@ public class Command {
 			try {
 				if (!change) {
 					Print.msg(thread + " Kurs erstellen failed!");
-				}else{
+				} else {
 					Print.msg(thread + " Kurs ändern failed!");
 				}
 				TCP.send(client, HTTP.HEADER_OK);
@@ -603,9 +605,10 @@ public class Command {
 				Print.err(thread + " Fehler beim Sende an einen Client");
 			}
 		} else {
-			
+
 			if (!change) {
-				General.wahl.addKurs(new Kurs(name, description, size, min, max));
+				General.wahl
+						.addKurs(new Kurs(name, description, size, min, max));
 				Print.deb(thread + "Kurs wurder erfolgreich hinzugefügt!");
 				try {
 					TCP.send(client, HTTP.HEADER_OK);
@@ -614,23 +617,51 @@ public class Command {
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
-			}else{
+			} else {
 				kursToChange.setName(name);
 				kursToChange.setBeschreibung(description);
 				kursToChange.setKursgroesse(size);
 				kursToChange.setJahrgangsberechtigungMin(min);
 				kursToChange.setJahrgangsberechtigungMax(max);
 				Print.deb(thread + "Kurs wurder erfolgreich geändert!");
+				
+				String inhalt = Misc.read(Config.getWebroot()
+						+ Config.SUPER_LEHRER_PAGE);
+
+				inhalt = inhalt.replaceAll("%add%", "create");
+				inhalt = inhalt.replaceAll("%change%", "admin");
+				String liste = "";
+				Kurs[] kursListe = General.wahl.getKursListe();
+				for (int i = 0; i < kursListe.length; i++) {
+					if (i == 0) {
+						liste = liste + "<option selected>"
+								+ kursListe[i].getName() + "</option>";
+					} else {
+						liste = liste + "<option>" + kursListe[i].getName()
+								+ "</option>";
+					}
+				}
+				inhalt = inhalt.replaceAll("%kursliste%", liste);
+				inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+						+ sessionkey);
+				inhalt = inhalt.replaceAll("%delkurs%", "admin");
+				inhalt = inhalt.replaceAll("%create%", "createwahl");
+				inhalt = inhalt.replaceAll("%cancel%", "admin");
+				inhalt = inhalt.replaceAll("%hidden%",
+						"<input type=hidden name='sk' value='" + sessionkey
+								+ "'>");
+				inhalt = inhalt
+						+ "<script>alert(unescape('Der Kurs wurde erfolgreich ge%E4ndert!'));</script>";
+
+				
 				try {
 					TCP.send(client, HTTP.HEADER_OK);
-					TCP.send(client,
-							"<script>alert('Der Kurs wurde erfolgreich geändert!');</script>");
+					TCP.send(client,inhalt);
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			}
-			
-			
+
 		}
 	}
 
@@ -869,12 +900,37 @@ public class Command {
 				}
 			}
 			inhalt = inhalt.replaceAll("%kursliste%", liste);
-			inhalt = inhalt.replaceAll("%overview%", "admin");
+			inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+					+ sessionkey);
 			inhalt = inhalt.replaceAll("%delkurs%", "admin");
 			inhalt = inhalt.replaceAll("%create%", "createwahl");
 			inhalt = inhalt.replaceAll("%cancel%", "admin");
 			inhalt = inhalt.replaceAll("%hidden%",
 					"<input type=hidden name='sk' value='" + sessionkey + "'>");
+		} else if (filePath.equals(Config.getWebroot()
+				+ Config.KURS_UEBERSICHT_PAGE)) {
+			String kurse = "";
+
+			/*
+			 * <tr> <td align="left" style="width:150px;"> </td> <td
+			 * align="left" style="width:500px;"> </td> <td align="left"
+			 * style="width:100px;"> </td> </tr>
+			 */
+
+			Kurs[] kursList = General.wahl.getKursListe();
+			for (int k = 0; k < kursList.length; k++) {
+				kurse = kurse + "<tr>"
+						+ "<td align='left' style='width:150px;'>"
+						+ kursList[k].getName() + "</td>"
+						+ "<td align='left' style='width:500px;'>"
+						+ kursList[k].getBeschreibung() + "</td>"
+						+ "<td align='left' style='width:100px;'>"
+						+ kursList[k].getJahrgangsberechtigungMin() + " - "
+						+ kursList[k].getJahrgangsberechtigungMax() + "</td>"
+						+ "</tr>";
+			}
+
+			inhalt = inhalt.replaceAll("%kurse%", kurse);
 		}
 
 		// Senden der Datei
@@ -886,6 +942,7 @@ public class Command {
 			Print.err(thread + " Fehler beim Sende an einen Client");
 		}
 	}
+
 	/**
 	 * Liest die Datei ein und sendet Antwort an Client
 	 * 
@@ -964,12 +1021,40 @@ public class Command {
 						break;
 					}
 				}
-			}if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
+			}
+			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
 				if (General.wahl.admin.online) {
 					authorized = true;
 				}
 			}
 		} else if (userType == Admin.ADMIN) {
+			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
+				if (General.wahl.admin.online) {
+					authorized = true;
+				}
+			}
+
+		} else if (userType == User.USER) {
+			User[] userList = General.wahl.getLehrerList();
+			for (int i = 0; i < userList.length; i++) {
+				if (sessionkey.equals(userList[i].getSessionkey())) {
+					if (userList[i].online) {
+						authorized = true;
+						break;
+					}
+				}
+			}
+
+			userList = General.wahl.getSchuelerList();
+			for (int i = 0; i < userList.length; i++) {
+				if (sessionkey.equals(userList[i].getSessionkey())) {
+					if (userList[i].online) {
+						authorized = true;
+						break;
+					}
+				}
+			}
+
 			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
 				if (General.wahl.admin.online) {
 					authorized = true;

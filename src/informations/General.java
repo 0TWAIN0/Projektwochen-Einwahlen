@@ -23,14 +23,15 @@ public class General {
 			Print.deb(schueler[i].getName() + "  " + schueler[i].getPasswort());
 		}
 		
-		for (int i = 1; i <= 50; i++){
-		}
-		
 		date.set(2012, 8, 6);
 		try {
 			wahl = new Wahl(date,schueler, lehrer);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		
+		for (int i = 1; i <= 50; i++){
+			wahl.addKurs(new Kurs("kurs" + i,"desc",10,07,11));
 		}
 	}
 }

@@ -4,6 +4,15 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	</head>
 
+	<script type="text/javascript">
+		function pop(file,windowname,features)
+		{
+			helpwindow = window.open(file,windowname,features);
+			helpwindow.focus();
+			return false;
+		}
+	</script>
+
 	<body bgcolor="#FFFFFF">
 		<div id="Layer1" style="position:absolute; width:599px; height:89px; z-index:7; left: 400px; top: 35px"> 
 			<p align="center"><font size="+7">Administrator </font></p>
@@ -28,9 +37,9 @@
 		</div>
 
 		<div id="Layer4" style="position:absolute;z-index:9; left: 538px; top: 243px"> 
-			<form action="%overview%" name="form3" >
-				%hidden%
-		    		<input type="submit" name="view" value="Kurs&uuml;bersicht">
+			<form name="form3" >
+		    		<input type="submit" name="view" value="Kurs&uuml;bersicht" href="datei.html" target="_blank" onclick="return pop('%overview%','pophelp','f1,f2,f3')" >
+
 		  	</form>
 		</div>
 

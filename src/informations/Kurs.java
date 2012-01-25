@@ -121,12 +121,31 @@ public class Kurs {
 	}
 	
 	public void removeSchueler(Schueler schueler, int flag) {
+		if (schueler == null){
+			Print.deb("Schueler == null in Kurs.removeSchueler()");
+			return;
+		}
+		if (schuelerliste.length == 0){
+			Print.deb("Schueler kann nicht gelöscht werden, da keine Schüler existieren!");
+			return;
+		}
 		Schueler[] neueSchuelerliste = new Schueler[schuelerliste.length - 1];
 		int index = 0;
 		if (flag == 1){
 			Print.deb("remove: " + schueler);
 			Array.show(schuelerliste);
 		}
+		boolean found = false;
+		for(int i = 0; i<schuelerliste.length;i++){
+			if (schuelerliste[i].equals(schueler)){
+				found = true;
+			}
+		}
+		if (!found) {
+			Print.deb("Schueler zum löschen konnte nicht gefunden werden!");
+			return;
+		}
+		
 		for(int i = 0; i<schuelerliste.length;i++){
 			if (!schuelerliste[i].equals(schueler)){
 				neueSchuelerliste[index] = schuelerliste[i];

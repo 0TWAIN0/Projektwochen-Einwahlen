@@ -19,7 +19,15 @@ import misc.Print;
 public class Command {
 
 	// TODO THREAD SAVE!!
-
+	
+	/**
+	 * Bearbeitung von Admin-Aktivitaeten
+	 * @param client
+	 * @param args
+	 * @param thread
+	 * @throws SecurityException
+	 * @throws FileNotFoundException
+	 */
 	public static void admin(Socket client, String[] args, Thread thread)
 			throws SecurityException, FileNotFoundException {
 

@@ -292,7 +292,40 @@ public class Command {
 			}
 			Print.msg(thread + " Wahl wurde von " + uname + " abgebrochen");
 			
-			//TODO Wahl Abbrechen
+			//Kurs löschen
+			General.wahl = null;
+			
+			String inhalt = Misc.read(Config.getWebroot()
+					+ Config.SUPER_LEHRER_PAGE);
+			inhalt = inhalt.replaceAll("%add%", "create");
+			inhalt = inhalt.replaceAll("%change%", "admin");
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
+			inhalt = inhalt.replaceAll("%kursliste%", "");
+			inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+					+ sessionkey);
+			inhalt = inhalt.replaceAll("%delkurs%", "admin");
+			inhalt = inhalt.replaceAll("%create%", "createwahl");
+			inhalt = inhalt.replaceAll("%cancel%", "admin");
+			inhalt = inhalt.replaceAll("%hidden%",
+					"<input type=hidden name='sk' value='" + sessionkey
+							+ "'>");
+			inhalt = inhalt + "<script>alert(unescape('Der Wahl wurde erfolgreich abgebrochen!'));</script>";
+
+			try {
+				u = User.getUserBySk(sessionkey);
+				uname = "";
+				if (u == null){
+					uname = "UNKNOWN";
+				}else{
+					uname = u.getName();
+				}
+				Print.msg(thread + " Die Wahl wurde von " + uname + " abgebrochen!");
+
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client, inhalt);
+			} catch (IOException e) {
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
 		}
 	}
 

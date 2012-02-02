@@ -32,7 +32,7 @@ public class User {
 	}
 	
 	/**
-	 * @return the passwort
+	 * @return Das Passwort
 	 */
 	public String getPasswort() {
 		return passwort;
@@ -110,14 +110,11 @@ public class User {
 		return false;
 	}
 	
-	public static User valueOf(Object obj) throws RuntimeException{
-		if (obj == null){
-			//throw new RuntimeException("Obj is NULL!");
-		}
+	public static User valueOf(Object obj) {
 		User user = (User)obj;
 		return user;		
 	}
-	public static User[] valueOf(Object[] obj) throws RuntimeException{
+	public static User[] valueOf(Object[] obj) {
 		User[] userList = new User[obj.length];
 		for (int i = 0 ; i < obj.length; i++){
 			userList[i] = User.valueOf(obj[i]);

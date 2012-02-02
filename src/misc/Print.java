@@ -27,17 +27,35 @@ public class Print {
 	 * @param msg
 	 */
 	public static void deb(String msg) {
+		if (!Config.DEBUGING){
+			return;
+		}
 		//log(msg);
 		System.out.println("[DEBUG] " + msg);
 	}
+	
 	public static void deb(int msg) {
+		if (!Config.DEBUGING){
+			return;
+		}
 		System.out.println("[DEBUG] " + msg);
+	}
+	
+	public static void deberr(String msg) {
+		if (!Config.DEBUGING){
+			return;
+		}
+		//log(msg);
+		System.out.println("[ERROR] " + msg);
 	}
 	/**
 	 * eingerückte Debugausgabe
 	 * @param msg
 	 */
 	public static void debtab(String msg) {
+		if (!Config.DEBUGING){
+			return;
+		}
 		//log(msg);
 		System.out.println("        " + msg);
 		

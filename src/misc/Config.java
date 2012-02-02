@@ -24,6 +24,7 @@ public class Config {
 	public static final int MAXIMAL_JAHRGANG = 13;
 	public static final int MINIMAL_JAHRGANG = 07;
 
+	public static final boolean DEBUGING = true;
 	private static int port;
 	private static String webroot;
 	private static String errorPage;

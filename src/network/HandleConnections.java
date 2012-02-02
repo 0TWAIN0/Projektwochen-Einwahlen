@@ -30,7 +30,7 @@ public class HandleConnections implements Runnable {
 	public void run() {
 		Print.deb("NEUER THREAD: " + Thread.currentThread());
 		
-		Print.msg(Thread.currentThread()+" Neue Verbindung! IP: '" + client.getInetAddress()
+		Print.deb(Thread.currentThread()+" Neue Verbindung! IP: '" + client.getInetAddress()
 				+ "' Port: '" + client.getPort() + "'");
 		// Daten empfangen
 		String empfang = "";
@@ -42,12 +42,12 @@ public class HandleConnections implements Runnable {
 			e.printStackTrace();
 			return;
 		} catch (NoSuchElementException e2) {
-			Print.err(Thread.currentThread()+" Empfangen der Daten von " + client.getInetAddress()
+			Print.deberr(Thread.currentThread()+" Empfangen der Daten von " + client.getInetAddress()
 					+ " fehlgeschlagen!");
 			return;
 		}
 
-		Print.msg(Thread.currentThread()+" Empfangene Daten: '" + empfang + "' von "
+		Print.deb(Thread.currentThread()+" Empfangene Daten: '" + empfang + "' von "
 				+ client.getInetAddress());
 
 		// Empfangene Daten prüfen und entsprechen reagieren
@@ -62,7 +62,7 @@ public class HandleConnections implements Runnable {
 				http.get(client, split, Thread.currentThread());
 			} else if (split[1].equalsIgnoreCase("POST")) { // POST Request
 				// http.post(client, empfang);
-				Print.msg("POST REQEST!");
+				Print.deb("POST REQEST!");
 			} else {
 				Print.deb(Thread.currentThread() + "Es wurde ein unbekannter HTTP-Request gesendet!");
 				http.error(client, HTTP.SYNTAX_ERROR, Thread.currentThread());

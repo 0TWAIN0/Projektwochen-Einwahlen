@@ -44,11 +44,10 @@ public class Command {
 			} else if (arguments[i][0].equals("change")) {
 				change = true;
 			} else if (arguments[i][0].equals("changekurs")) {
-				changeKurs = arguments[i][1];
-			} else if (arguments[i][0].equals("del")) {
-				delete = true;
+				changeKurs = Misc.unescape(arguments[i][1]);
 			} else if (arguments[i][0].equals("delkurs")) {
-				delKurs = arguments[i][1];
+				delKurs = Misc.unescape(arguments[i][1]);
+				delete = true;
 			} else if (arguments[i][0].equals("cancel")) {
 				cancel = true;
 			}
@@ -90,6 +89,7 @@ public class Command {
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.SUPER_LEHRER_PAGE);
 				inhalt = inhalt.replaceAll("%add%", "create");
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 				inhalt = inhalt.replaceAll("%change%", "admin");
 				String liste = "";
 				Kurs[] kursListe = General.wahl.getKursListe();
@@ -103,7 +103,7 @@ public class Command {
 					}
 				}
 				inhalt = inhalt.replaceAll("%kursliste%", liste);
-				inhalt = inhalt.replaceAll("%overview%", "overview.html?sk="
+				inhalt = inhalt.replaceAll("%overview%", "overview?sk="
 						+ sessionkey);
 				inhalt = inhalt.replaceAll("%delkurs%", "admin");
 				inhalt = inhalt.replaceAll("%create%", "createwahl");
@@ -115,7 +115,7 @@ public class Command {
 						+ "'));</script>";
 
 				try {
-					Print.msg(thread + " Kurs ändern failed! Kurs unknown!");
+					Print.deb(thread + " Kurs ändern failed! Kurs unknown!");
 
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
@@ -131,9 +131,9 @@ public class Command {
 						break;
 					}
 				}
-
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.KURS_ERSTELLEN_PAGE);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 				inhalt = inhalt.replaceAll("%name%", kurs.getName());
 				inhalt = inhalt.replaceAll("%size%",
 						String.valueOf(kurs.getKursgroesse()));
@@ -149,7 +149,124 @@ public class Command {
 								+ kurs.getName() + "'>");
 
 				try {
-					Print.msg(thread + " Kurs ändern eingeleitet!");
+					TCP.send(client, HTTP.HEADER_OK);
+					TCP.send(client, inhalt);
+				} catch (IOException e) {
+					Print.err(thread + " Fehler beim Sende an einen Client");
+				}
+			}
+		} else if (delete) { //Das Löschen von Kursen
+			String errorMessage = "";
+			if (General.wahl == null) {
+				errorMessage = errorMessage
+						+ "Es wurde noch keine Wahl erstellt!%0A";
+			}
+			if (delKurs.equals("")) {
+				errorMessage = errorMessage
+						+ "Es wurde kein Kurs zum %C4ndern angegeben!%0A";
+			} else {
+				Kurs[] kursListe = General.wahl.getKursListe();
+				Kurs kurs = null;
+				for (int k = 0; k < kursListe.length; k++) {
+					if (delKurs.equals(kursListe[k].getName())) {
+						kurs = kursListe[k];
+						break;
+					}
+				}
+				if (kurs == null) {
+					errorMessage = errorMessage
+							+ "Der Kurs existiert nicht!%0A";
+				}
+			}
+
+			// Fehler wurde gefunden
+			if (!errorMessage.equals("")) {
+				String inhalt = Misc.read(Config.getWebroot()
+						+ Config.SUPER_LEHRER_PAGE);
+				inhalt = inhalt.replaceAll("%add%", "create");
+				inhalt = inhalt.replaceAll("%change%", "admin");
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				String liste = "";
+				Kurs[] kursListe = General.wahl.getKursListe();
+				for (int i = 0; i < kursListe.length; i++) {
+					if (i == 0) {
+						liste = liste + "<option selected>"
+								+ kursListe[i].getName() + "</option>";
+					} else {
+						liste = liste + "<option>" + kursListe[i].getName()
+								+ "</option>";
+					}
+				}
+				inhalt = inhalt.replaceAll("%kursliste%", liste);
+				inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+						+ sessionkey);
+				inhalt = inhalt.replaceAll("%delkurs%", "admin");
+				inhalt = inhalt.replaceAll("%create%", "createwahl");
+				inhalt = inhalt.replaceAll("%cancel%", "admin");
+				inhalt = inhalt.replaceAll("%hidden%",
+						"<input type=hidden name='sk' value='" + sessionkey
+								+ "'>");
+				inhalt = inhalt + "<script>alert(unescape('" + errorMessage
+						+ "'));</script>";
+
+				try {
+					Print.deb(thread + " Kurs löschen failed!");
+
+					TCP.send(client, HTTP.HEADER_OK);
+					TCP.send(client, inhalt);
+				} catch (IOException e) {
+					Print.err(thread + " Fehler beim Sende an einen Client");
+				}
+			} else { // Kein Fehler wurde gefunden
+				Kurs[] kursListe = General.wahl.getKursListe();
+				Kurs kurs = null;
+				for (int k = 0; k < kursListe.length; k++) {
+					if (delKurs.equals(kursListe[k].getName())) {
+						kurs = kursListe[k];
+						break;
+					}
+				}
+				
+				//Kurs löschen
+				General.wahl.delKurs(kurs);
+				
+				kursListe = General.wahl.getKursListe();
+
+				String inhalt = Misc.read(Config.getWebroot()
+						+ Config.SUPER_LEHRER_PAGE);
+				inhalt = inhalt.replaceAll("%add%", "create");
+				inhalt = inhalt.replaceAll("%change%", "admin");
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				String liste = "";
+				for (int i = 0; i < kursListe.length; i++) {
+					if (i == 0) {
+						liste = liste + "<option selected>"
+								+ kursListe[i].getName() + "</option>";
+					} else {
+						liste = liste + "<option>" + kursListe[i].getName()
+								+ "</option>";
+					}
+				}
+				inhalt = inhalt.replaceAll("%kursliste%", liste);
+				inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+						+ sessionkey);
+				inhalt = inhalt.replaceAll("%delkurs%", "admin");
+				inhalt = inhalt.replaceAll("%create%", "createwahl");
+				inhalt = inhalt.replaceAll("%cancel%", "admin");
+				inhalt = inhalt.replaceAll("%hidden%",
+						"<input type=hidden name='sk' value='" + sessionkey
+								+ "'>");
+				inhalt = inhalt + "<script>alert(unescape('Der Kurs wurde erfolgreich gels%F6cht!'));</script>";
+
+				try {
+					User u = User.getUserBySk(sessionkey);
+					String uname = "";
+					if (u == null){
+						uname = "UNKNOWN";
+					}else{
+						uname = u.getName();
+					}
+					Print.msg(thread + " Kurs wurde gelöscht! Kursname: " + kurs.getName() + " von " + uname);
 
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
@@ -157,10 +274,17 @@ public class Command {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			}
-		} else if (delete) {
-
 		} else if (cancel) {
-
+			User u = User.getUserBySk(sessionkey);
+			String uname = "";
+			if (u == null){
+				uname = "UNKNOWN";
+			}else{
+				uname = u.getName();
+			}
+			Print.msg(thread + " Wahl wurde von " + uname + " abgebrochen");
+			
+			//TODO Wahl Abbrechen
 		}
 	}
 
@@ -211,7 +335,7 @@ public class Command {
 			if (arguments[i][0].equals("sk")) {
 				sessionkey = arguments[i][1];
 			} else if (arguments[i][0].equals("date")) {
-				date = arguments[i][1];
+				date = Misc.unescape(arguments[i][1]);
 			} else if (arguments[i][0].equals("G07")) {
 				try {
 					g07 = Integer.valueOf(arguments[i][1]);
@@ -371,6 +495,7 @@ public class Command {
 					+ Config.WAHL_ERSTELLEN_PAGE);
 
 			page = page.replaceAll("%date%", date);
+			page = page.replaceAll("%logout%", "logout?sk=" +sessionkey);
 
 			page = page.replaceAll("%G07%", String.valueOf(g07));
 			page = page.replaceAll("%G08%", String.valueOf(g08));
@@ -394,7 +519,7 @@ public class Command {
 					"<input type=hidden name='sk' value='" + sessionkey + "'>");
 
 			try {
-				Print.msg(thread + " Kurs erstellen failed!");
+				Print.deb(thread + " Wahl erstellen failed!");
 				TCP.send(client, HTTP.HEADER_OK);
 				TCP.send(client, page + "<script>alert(unescape('"
 						+ errorMessage + "'));</script>");
@@ -404,7 +529,19 @@ public class Command {
 		} else {
 			// General.wahl.addKurs(new Kurs(name, description, size, min,
 			// max));
-			Print.deb(thread + "Wahl wurder erfolgreich hinzugefügt!");
+			/*
+			 * TODO Ueberpruefen ob bereits eine Wahl erstellt wurde
+			 * 		Ausgabe der Schueler & Lehrer Listen (im Exel Vormat?!)
+			 * 			- möglichḱeit zum zurückgehen zur Adminpage oder ausloggen
+			 */
+			User u = User.getUserBySk(sessionkey);
+			String uname = "";
+			if (u == null){
+				uname = "UNKNOWN";
+			}else{
+				uname = u.getName();
+			}
+			Print.msg(thread + "Wahl wurde von "+ uname + " erstellt");
 			try {
 				TCP.send(client, HTTP.HEADER_OK);
 				TCP.send(client,
@@ -451,7 +588,7 @@ public class Command {
 			if (arguments[i][0].equals("sk")) {
 				sessionkey = arguments[i][1];
 			} else if (arguments[i][0].equals("name")) {
-				name = arguments[i][1];
+				name = Misc.unescape(arguments[i][1]);
 			} else if (arguments[i][0].equals("size")) {
 				try {
 					size = Integer.valueOf(arguments[i][1]);
@@ -471,10 +608,10 @@ public class Command {
 					max = 0;
 				}
 			} else if (arguments[i][0].equals("desc")) {
-				description = arguments[i][1];
+				description = Misc.unescape(arguments[i][1]);
 			} else if (arguments[i][0].equals("change")) {
 				change = true;
-				changeKurs = arguments[i][1];
+				changeKurs = Misc.unescape(arguments[i][1]);
 			}
 		}
 
@@ -501,6 +638,7 @@ public class Command {
 
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 				String liste = "";
 				for (int i = 0; i < kursListe.length; i++) {
 					if (i == 0) {
@@ -582,7 +720,7 @@ public class Command {
 			Print.deb(thread + errorMessage);
 			String page = Misc.read(Config.getWebroot()
 					+ Config.KURS_ERSTELLEN_PAGE);
-
+			page = page.replaceAll("%logout%", "logout?sk=" +sessionkey);
 			page = page.replaceAll("%name%", name);
 			page = page.replaceAll("%size%", String.valueOf(size));
 			page = page.replaceAll("%min%", String.valueOf(min));
@@ -607,6 +745,14 @@ public class Command {
 		} else {
 
 			if (!change) {
+				User u = User.getUserBySk(sessionkey);
+				String uname = "";
+				if (u == null){
+					uname = "UNKNOWN";
+				}else{
+					uname = u.getName();
+				}
+				Print.msg(thread + " Kurs wurde erstellt. Name: " + name + " von " + uname);
 				General.wahl
 						.addKurs(new Kurs(name, description, size, min, max));
 				Print.deb(thread + "Kurs wurder erfolgreich hinzugefügt!");
@@ -618,6 +764,15 @@ public class Command {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			} else {
+				User u = User.getUserBySk(sessionkey);
+				String uname = "";
+				if (u == null){
+					uname = "UNKNOWN";
+				}else{
+					uname = u.getName();
+				}
+				Print.msg(thread + " Kurs wurde geändert. Name: " + name + " von " + uname);
+				
 				kursToChange.setName(name);
 				kursToChange.setBeschreibung(description);
 				kursToChange.setKursgroesse(size);
@@ -630,6 +785,7 @@ public class Command {
 
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 				String liste = "";
 				Kurs[] kursListe = General.wahl.getKursListe();
 				for (int i = 0; i < kursListe.length; i++) {
@@ -661,6 +817,13 @@ public class Command {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			}
+			
+			/*
+			 * TODO Erfolgreich Meldung mit möglichkeit zum:
+			 * 		noch einen Kurs erstellen
+			 * 		zu Adminbereich zurückkehren
+			 * 		ausloggen
+			 */
 
 		}
 	}
@@ -698,9 +861,9 @@ public class Command {
 		// Überprüfen der Richtigkeit von Namen und Passwort
 		for (int i = 0; i < arguments.length; i++) {
 			if (arguments[i][0].equals("user")) {
-				username = arguments[i][1];
+				username = Misc.unescape(arguments[i][1]);
 			} else if (arguments[i][0].equals("pw")) {
-				passwort = arguments[i][1];
+				passwort = Misc.unescape(arguments[i][1]);
 			}
 		}
 
@@ -744,8 +907,10 @@ public class Command {
 		}
 		// Reagieren auf erfolgreichen bzw. nicht erfolgreichen Login
 		if (login) {
+			Print.msg(thread + " Login! User: " + username + ", Passwort: " + passwort);
 			if (isLehrer) {
 				// Erfolgreicher Login des Admins
+				
 				synchronized (HandleConnections.LOCK) {
 					lehrer.setSessionkey();
 					lehrer.online = true;
@@ -789,12 +954,13 @@ public class Command {
 			}
 		} else {
 			// Fehlerhafter Login
+			
+			Print.msg(thread + " Fehlerhafter Loginversuch von " + client.getInetAddress());
 			String startseite = Misc.read(Config.getWebroot()
 					+ Config.START_PAGE);
 			startseite = startseite.replaceAll("%username%", username);
 			startseite = startseite.replaceAll("%password%", passwort);
 			try {
-				Print.msg(thread + " Login failed!");
 				TCP.send(client, HTTP.HEADER_OK);
 				TCP.send(
 						client,
@@ -853,6 +1019,7 @@ public class Command {
 		// Bearbeitung der Datei (Ersetzen von Makros)
 		if (filePath.equals(Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE)) {
 			inhalt = inhalt.replaceAll("%name%", "");
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 			inhalt = inhalt.replaceAll("%size%", String.valueOf(""));
 			inhalt = inhalt.replaceAll("%min%", String.valueOf(""));
 			inhalt = inhalt.replaceAll("%max%", String.valueOf(""));
@@ -863,6 +1030,7 @@ public class Command {
 		} else if (filePath.equals(Config.getWebroot()
 				+ Config.WAHL_ERSTELLEN_PAGE)) {
 			inhalt = inhalt.replaceAll("%date%", "dd:mm:yy");
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 
 			inhalt = inhalt.replaceAll("%G07%", "");
 			inhalt = inhalt.replaceAll("%G08%", "");
@@ -888,6 +1056,7 @@ public class Command {
 				+ Config.SUPER_LEHRER_PAGE)) {
 			inhalt = inhalt.replaceAll("%add%", "create");
 			inhalt = inhalt.replaceAll("%change%", "admin");
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
 			Kurs[] kursListe = General.wahl.getKursListe();
 			String liste = "";
 			for (int i = 0; i < kursListe.length; i++) {
@@ -909,13 +1078,9 @@ public class Command {
 					"<input type=hidden name='sk' value='" + sessionkey + "'>");
 		} else if (filePath.equals(Config.getWebroot()
 				+ Config.KURS_UEBERSICHT_PAGE)) {
+			//TODO Beschreibung: nach ca 100 Buchstaben \n
+			
 			String kurse = "";
-
-			/*
-			 * <tr> <td align="left" style="width:150px;"> </td> <td
-			 * align="left" style="width:500px;"> </td> <td align="left"
-			 * style="width:100px;"> </td> </tr>
-			 */
 
 			Kurs[] kursList = General.wahl.getKursListe();
 			for (int k = 0; k < kursList.length; k++) {
@@ -934,7 +1099,7 @@ public class Command {
 		}
 
 		// Senden der Datei
-		Print.msg(thread + " Senden von: " + filePath);
+		Print.deb(thread + " Senden von: " + filePath);
 		try {
 			TCP.send(client, HTTP.HEADER_OK);
 			TCP.send(client, inhalt);
@@ -968,7 +1133,7 @@ public class Command {
 		}
 
 		// Senden der Datei
-		Print.msg(thread + " Senden von: " + filePath);
+		Print.deb(thread + " Senden von: " + filePath);
 		try {
 			TCP.send(client, HTTP.HEADER_OK);
 			TCP.send(client, inhalt);

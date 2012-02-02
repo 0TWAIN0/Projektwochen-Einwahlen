@@ -11,11 +11,20 @@
 			helpwindow.focus();
 			return false;
 		}
+		function conf(msg){
+			Conf = confirm(unescape(msg));
+			if (Conf == true){
+				document.forms[3].submit();
+			}
+		}
 	</script>
 
 	<body bgcolor="#FFFFFF">
-		<div id="Layer1" style="position:absolute; width:599px; height:89px; z-index:7; left: 400px; top: 35px"> 
+		<div style="position:absolute; width:599px; height:89px; z-index:7; left: 400px; top: 35px"> 
 			<p align="center"><font size="+7">Administrator </font></p>
+		</div>
+		<div id="Layer1" style="position:absolute;left: 850px;"> 
+			<p><a href="%logout%">Logout</a></p>
 		</div>
 
 		<div id="Layer2" style="position:absolute;z-index:8; left: 539px; top: 191px"> 
@@ -38,7 +47,7 @@
 
 		<div id="Layer4" style="position:absolute;z-index:9; left: 538px; top: 243px"> 
 			<form name="form3" >
-		    		<input type="submit" name="view" value="Kurs&uuml;bersicht" href="datei.html" target="_blank" onclick="return pop('%overview%','pophelp','f1,f2,f3')" >
+		    		<input type="submit" name="view" value="Kurs&uuml;bersicht" href="%overview%" target="_blank" onclick="return pop('%overview%','pophelp','f1,f2,f3')" >
 
 		  	</form>
 		</div>
@@ -50,7 +59,7 @@
 		      		<select name="delkurs">
 					%kursliste%
 		      		</select>
-				<input type="submit" name="del" value="Kurs l&ouml;schen">
+				<input type="button" value="Kurs l&ouml;schen" onclick="conf('Wollen Sie diesen Kurs wirklich l%F6schen?')">
 				</p>
 		   	</form>
 		</div>
@@ -66,5 +75,6 @@
 		    		<input type="submit" name="cancel" value="Wahl abbrechen">
 		  	</form>
 		</div>
+
 	</body>
 </html>

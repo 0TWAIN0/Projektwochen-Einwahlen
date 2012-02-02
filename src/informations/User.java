@@ -1,5 +1,6 @@
 package informations;
 
+import misc.Array;
 import misc.Misc;
 
 public class User {
@@ -9,6 +10,26 @@ public class User {
 	private String name;
 	public boolean online = false;
 	public static final int USER = 3;
+	private static User[] userList = new User[0];
+	
+	public static User getUserBySk(String sessionkey){
+		if (sessionkey == null){
+			return null;
+		}
+		for (int i = 0; i < userList.length; i++){
+			if (userList[i] == null){
+				continue;
+			}else if (sessionkey.equals(userList[i].getSessionkey())){
+				return userList[i];
+			}
+		}
+		return null;
+	}
+	
+	protected User (){
+		userList = User.valueOf(Array.addField(userList));
+		userList[userList.length-1] = this;
+	}
 	
 	/**
 	 * @return the passwort
@@ -87,7 +108,21 @@ public class User {
 			return true;
 		}
 		return false;
-
+	}
+	
+	public static User valueOf(Object obj) throws RuntimeException{
+		if (obj == null){
+			//throw new RuntimeException("Obj is NULL!");
+		}
+		User user = (User)obj;
+		return user;		
+	}
+	public static User[] valueOf(Object[] obj) throws RuntimeException{
+		User[] userList = new User[obj.length];
+		for (int i = 0 ; i < obj.length; i++){
+			userList[i] = User.valueOf(obj[i]);
+		}
+		return userList;
 	}
 
 }

@@ -41,10 +41,11 @@ public class HTTP {
 	private static final String COMMAND_START_PAGE = "/";
 	private static final String COMMAND_LOGIN = "/login";
 	private static final String COMMAND_CREATE_KURS = "/create";
-	private static final String COMMAND_VOTE = "/vote";
+	private static final String COMMAND_VOTE = "/vote"; //TODO
 	private static final String COMMAND_CREATE_WAHL = "/createwahl";
 	private static final String COMMAND_ADMIN_INTERFACE = "/admin";
 	private static final String COMMAND_SHOW_KURSLIST = "/overview";
+	private static final String COMMAND_LOGOUT = "/logout"; //TODO
 
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
@@ -60,7 +61,7 @@ public class HTTP {
 
 		// Identifizierung des übergebenen Befehls
 		if (splitted[1].equals(COMMAND_START_PAGE)) {
-			Print.deb(thread + " Anfrage: Startpage");
+			Print.msg(thread + " Anfrage: Startpage von " + client.getInetAddress());
 			String startPage = webroot + Config.START_PAGE;
 			try {
 				Command.allowedFileReqest(client, startPage, thread);
@@ -105,6 +106,7 @@ public class HTTP {
 
 			// Reaktions auf Befehl
 			if (command.equals(COMMAND_LOGIN)) {
+				//Print.msg(thread + " Anfrage: Login von " + client.getInetAddress());
 				try {
 					Command.login(client, arguments, thread);
 				} catch (FileNotFoundException e) {
@@ -112,6 +114,7 @@ public class HTTP {
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if (command.equals(COMMAND_SHOW_KURSLIST)) {
+				Print.msg(thread + " Anfrage: Kursliste von " + client.getInetAddress());
 				try {
 					Command.protectedFileReqest(client, Config.getWebroot()
 							+ Config.KURS_UEBERSICHT_PAGE, arguments,
@@ -167,6 +170,7 @@ public class HTTP {
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				} else {
+					Print.msg(thread + " Anfrage: Admin Interface von " + client.getInetAddress());
 					try {
 						Command.protectedFileReqest(client, Config.getWebroot()
 								+ Config.SUPER_LEHRER_PAGE, arguments,
@@ -210,6 +214,7 @@ public class HTTP {
 					}
 				}
 			} else if (command.equals(COMMAND_VOTE)) {
+				Print.msg(thread + " Anfrage: Einwählen von " + client.getInetAddress());
 				try {
 					Command.protectedFileReqest(client, Config.getWebroot()
 							+ Config.KURS_WAHL_PAGE, arguments,
@@ -242,7 +247,7 @@ public class HTTP {
 					}
 				} else {
 					Print.deb(thread
-							+ "Es wurde eine fehlerhafte Anfrage empfangen!");
+							+ " Es wurde eine fehlerhafte Anfrage empfangen!");
 					error(client, SYNTAX_ERROR, thread);
 				}
 			}
@@ -279,7 +284,7 @@ public class HTTP {
 			}
 
 			// Senden der Error Page
-			Print.msg(thread + " Sending " + errorPage + " to "
+			Print.deb(thread + " Sending " + errorPage + " to "
 					+ client.getInetAddress());
 			try {
 				TCP.send(client, HEADER_FILE_NOT_FOUND);
@@ -291,7 +296,7 @@ public class HTTP {
 			}
 		} else if (flag == SYNTAX_ERROR) {
 			// Senden der des Errors
-			Print.msg(thread + " Sending Bad Request Error to "
+			Print.deb(thread + " Sending Bad Request Error to "
 					+ client.getInetAddress());
 			try {
 				TCP.send(client, HEADER_BAD_REQUEST);
@@ -303,11 +308,11 @@ public class HTTP {
 			}
 		} else if (flag == ACCESS_FORBIDDEN_ERROR) {
 			// Senden der des Errors
-			Print.msg(thread + " Sending Access Forbidden Error to "
+			Print.deb(thread + " Sending Access Forbidden Error to "
 					+ client.getInetAddress());
 			try {
 				TCP.send(client, HEADER_BAD_REQUEST);
-				TCP.send(client, "<html><h2>403 - Access Forbidden</h2></html>");
+				TCP.send(client, "<html><h2>403 - Access Forbidden</h2><br><p>Weiter zur <a href='/'>Startseite</a>!</p></html>");
 			} catch (IOException e) {
 				Print.err(thread + " Senden an " + client.getInetAddress()
 						+ " fehlgeschlagen!");

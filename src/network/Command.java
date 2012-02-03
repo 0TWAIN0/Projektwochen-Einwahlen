@@ -6,6 +6,7 @@ import informations.Kurs;
 import informations.Lehrer;
 import informations.Schueler;
 import informations.User;
+import informations.Wahl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,9 +20,10 @@ import misc.Print;
 public class Command {
 
 	// TODO THREAD SAVE!!
-	
+
 	/**
 	 * Bearbeitung von Admin-Aktivitaeten
+	 * 
 	 * @param client
 	 * @param args
 	 * @param thread
@@ -97,7 +99,8 @@ public class Command {
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.SUPER_LEHRER_PAGE);
 				inhalt = inhalt.replaceAll("%add%", "create");
-				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
 				inhalt = inhalt.replaceAll("%change%", "admin");
 				String liste = "";
 				Kurs[] kursListe = General.wahl.getKursListe();
@@ -141,7 +144,8 @@ public class Command {
 				}
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.KURS_ERSTELLEN_PAGE);
-				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
 				inhalt = inhalt.replaceAll("%name%", kurs.getName());
 				inhalt = inhalt.replaceAll("%size%",
 						String.valueOf(kurs.getKursgroesse()));
@@ -163,7 +167,7 @@ public class Command {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			}
-		} else if (delete) { //Das Löschen von Kursen
+		} else if (delete) { // Das Löschen von Kursen
 			String errorMessage = "";
 			if (General.wahl == null) {
 				errorMessage = errorMessage
@@ -193,7 +197,8 @@ public class Command {
 						+ Config.SUPER_LEHRER_PAGE);
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
-				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
 				String liste = "";
 				Kurs[] kursListe = General.wahl.getKursListe();
 				for (int i = 0; i < kursListe.length; i++) {
@@ -234,17 +239,18 @@ public class Command {
 						break;
 					}
 				}
-				
-				//Kurs löschen
+
+				// Kurs löschen
 				General.wahl.delKurs(kurs);
-				
+
 				kursListe = General.wahl.getKursListe();
 
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.SUPER_LEHRER_PAGE);
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
-				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
 				String liste = "";
 				for (int i = 0; i < kursListe.length; i++) {
 					if (i == 0) {
@@ -264,17 +270,19 @@ public class Command {
 				inhalt = inhalt.replaceAll("%hidden%",
 						"<input type=hidden name='sk' value='" + sessionkey
 								+ "'>");
-				inhalt = inhalt + "<script>alert(unescape('Der Kurs wurde erfolgreich gels%F6cht!'));</script>";
+				inhalt = inhalt
+						+ "<script>alert(unescape('Der Kurs wurde erfolgreich gels%F6cht!'));</script>";
 
 				try {
 					User u = User.getUserBySk(sessionkey);
 					String uname = "";
-					if (u == null){
+					if (u == null) {
 						uname = "UNKNOWN";
-					}else{
+					} else {
 						uname = u.getName();
 					}
-					Print.msg(thread + " Kurs wurde gelöscht! Kursname: " + kurs.getName() + " von " + uname);
+					Print.msg(thread + " Kurs wurde gelöscht! Kursname: "
+							+ kurs.getName() + " von " + uname);
 
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
@@ -285,16 +293,16 @@ public class Command {
 		} else if (cancel) {
 			User u = User.getUserBySk(sessionkey);
 			String uname = "";
-			if (u == null){
+			if (u == null) {
 				uname = "UNKNOWN";
-			}else{
+			} else {
 				uname = u.getName();
 			}
 			Print.msg(thread + " Wahl wurde von " + uname + " abgebrochen");
-			
-			//Kurs löschen
+
+			// Kurs löschen
 			General.wahl = null;
-			
+
 			String inhalt = Misc.read(Config.getWebroot()
 					+ Config.SUPER_LEHRER_PAGE);
 			inhalt = inhalt.replaceAll("%add%", "create");
@@ -307,19 +315,20 @@ public class Command {
 			inhalt = inhalt.replaceAll("%create%", "createwahl");
 			inhalt = inhalt.replaceAll("%cancel%", "admin");
 			inhalt = inhalt.replaceAll("%hidden%",
-					"<input type=hidden name='sk' value='" + sessionkey
-							+ "'>");
-			inhalt = inhalt + "<script>alert(unescape('Der Wahl wurde erfolgreich abgebrochen!'));</script>";
+					"<input type=hidden name='sk' value='" + sessionkey + "'>");
+			inhalt = inhalt
+					+ "<script>alert(unescape('Der Wahl wurde erfolgreich abgebrochen!'));</script>";
 
 			try {
 				u = User.getUserBySk(sessionkey);
 				uname = "";
-				if (u == null){
+				if (u == null) {
 					uname = "UNKNOWN";
-				}else{
+				} else {
 					uname = u.getName();
 				}
-				Print.msg(thread + " Die Wahl wurde von " + uname + " abgebrochen!");
+				Print.msg(thread + " Die Wahl wurde von " + uname
+						+ " abgebrochen!");
 
 				TCP.send(client, HTTP.HEADER_OK);
 				TCP.send(client, inhalt);
@@ -480,6 +489,9 @@ public class Command {
 
 		// Eingaben auf Fehler pruefen
 		String errorMessage = "";
+		if (General.wahl != null){
+			errorMessage += "Es wurde bereits eine Wahl erstellt!%0A";
+		}
 		if (date.equals("")) {
 			errorMessage = errorMessage
 					+ "Es wurde kein Einwahlschluss angegeben!%0A";
@@ -568,13 +580,158 @@ public class Command {
 				Print.err(thread + " Fehler beim Sende an einen Client");
 			}
 		} else {
-			// General.wahl.addKurs(new Kurs(name, description, size, min,
-			// max));
-			/*
-			 * TODO Ueberpruefen ob bereits eine Wahl erstellt wurde
-			 * 		Ausgabe der Schueler & Lehrer Listen (im Exel Vormat?!)
-			 * 			- möglichḱeit zum zurückgehen zur Adminpage oder ausloggen
-			 */
+			int schueler = 0;
+			schueler = g07 + g08 + g09 + g10 + g11 + g12 + r07 + r08 + r09 + r10 + h07 + h08 + h09 + h10;
+			Schueler[] schuelerListe = new Schueler[schueler];
+			Lehrer[] lehrerListe = new Lehrer[teacher];
+			int schuelerIndex = 0;
+			//Schueler generieren
+			for (int i = 1; i <= g07;i++){
+				String name = "G07" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 7;
+				String schulzweig = "G";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= g08;i++){
+				String name = "G08" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 8;
+				String schulzweig = "G";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= g09;i++){
+				String name = "G09" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 9;
+				String schulzweig = "G";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= g10;i++){
+				String name = "G10" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 10;
+				String schulzweig = "G";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= g11;i++){
+				String name = "G11" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 11;
+				String schulzweig = "G";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= g12;i++){
+				String name = "G12" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 12;
+				String schulzweig = "G";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			
+			for (int i = 1; i <= r07;i++){
+				String name = "R07" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 7;
+				String schulzweig = "R";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= r08;i++){
+				String name = "R08" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 8;
+				String schulzweig = "R";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= r09;i++){
+				String name = "R09" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 9;
+				String schulzweig = "R";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= r10;i++){
+				String name = "R10" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 10;
+				String schulzweig = "R";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= h07;i++){
+				String name = "H07" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 7;
+				String schulzweig = "H";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= h08;i++){
+				String name = "H08" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 8;
+				String schulzweig = "H";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= h09;i++){
+				String name = "H09" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 9;
+				String schulzweig = "H";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			for (int i = 1; i <= h10;i++){
+				String name = "H10" + i;
+				String passwort = Misc.gen(6);
+				int jahrgang = 10;
+				String schulzweig = "H";
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
+				schuelerIndex ++;
+			}
+			
+			//Lehrer generieren
+			for (int i = 0; i <lehrerListe.length;i++){
+				String name = "LEHRER" + i;
+				String passwort = Misc.gen(6);
+				lehrerListe[i] = new Lehrer(name, passwort);
+			}
+			
+			
+			String inhalt = Misc.read(Config.getWebroot() + Config.WAHL_ANSWER);
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+			inhalt = inhalt.replaceAll("%action%", "admin?sk=" + sessionkey);
+			String schuelerL = "";
+			for (int i = 0; i<schuelerListe.length; i++){
+				schuelerL += "<tr> + " +
+						"<td align='left' style='width:150px;'>"+ schuelerListe[i].getName() + "</td>"+
+						"<td align='left' style='width:150px;'>"+ schuelerListe[i].getPasswort() +"</td></tr>";
+			}
+			inhalt = inhalt.replaceAll("%schueler%",schuelerL);
+			String lehrerL = "";
+			for (int i = 0; i<lehrerListe.length; i++){
+				lehrerL += "<tr> + " +
+						"<td align='left' style='width:150px;'>"+ lehrerListe[i].getName() + "</td>"+
+						"<td align='left' style='width:150px;'>"+ lehrerListe[i].getPasswort() +"</td></tr>";
+			}
+			inhalt = inhalt.replaceAll("%lehrer%",lehrerL);
+			
+			try {
+				General.wahl = new Wahl(cal, schuelerListe, lehrerListe);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			 
 			User u = User.getUserBySk(sessionkey);
 			String uname = "";
 			if (u == null){
@@ -679,7 +836,8 @@ public class Command {
 
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
-				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
 				String liste = "";
 				for (int i = 0; i < kursListe.length; i++) {
 					if (i == 0) {
@@ -761,7 +919,7 @@ public class Command {
 			Print.deb(thread + errorMessage);
 			String page = Misc.read(Config.getWebroot()
 					+ Config.KURS_ERSTELLEN_PAGE);
-			page = page.replaceAll("%logout%", "logout?sk=" +sessionkey);
+			page = page.replaceAll("%logout%", "logout?sk=" + sessionkey);
 			page = page.replaceAll("%name%", name);
 			page = page.replaceAll("%size%", String.valueOf(size));
 			page = page.replaceAll("%min%", String.valueOf(min));
@@ -788,12 +946,13 @@ public class Command {
 			if (!change) {
 				User u = User.getUserBySk(sessionkey);
 				String uname = "";
-				if (u == null){
+				if (u == null) {
 					uname = "UNKNOWN";
-				}else{
+				} else {
 					uname = u.getName();
 				}
-				Print.msg(thread + " Kurs wurde erstellt. Name: " + name + " von " + uname);
+				Print.msg(thread + " Kurs wurde erstellt. Name: " + name
+						+ " von " + uname);
 				General.wahl
 						.addKurs(new Kurs(name, description, size, min, max));
 				Print.deb(thread + "Kurs wurder erfolgreich hinzugefügt!");
@@ -807,26 +966,28 @@ public class Command {
 			} else {
 				User u = User.getUserBySk(sessionkey);
 				String uname = "";
-				if (u == null){
+				if (u == null) {
 					uname = "UNKNOWN";
-				}else{
+				} else {
 					uname = u.getName();
 				}
-				Print.msg(thread + " Kurs wurde geändert. Name: " + name + " von " + uname);
-				
+				Print.msg(thread + " Kurs wurde geändert. Name: " + name
+						+ " von " + uname);
+
 				kursToChange.setName(name);
 				kursToChange.setBeschreibung(description);
 				kursToChange.setKursgroesse(size);
 				kursToChange.setJahrgangsberechtigungMin(min);
 				kursToChange.setJahrgangsberechtigungMax(max);
 				Print.deb(thread + "Kurs wurder erfolgreich geändert!");
-				
+
 				String inhalt = Misc.read(Config.getWebroot()
 						+ Config.SUPER_LEHRER_PAGE);
 
 				inhalt = inhalt.replaceAll("%add%", "create");
 				inhalt = inhalt.replaceAll("%change%", "admin");
-				inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
 				String liste = "";
 				Kurs[] kursListe = General.wahl.getKursListe();
 				for (int i = 0; i < kursListe.length; i++) {
@@ -850,20 +1011,17 @@ public class Command {
 				inhalt = inhalt
 						+ "<script>alert(unescape('Der Kurs wurde erfolgreich ge%E4ndert!'));</script>";
 
-				
 				try {
 					TCP.send(client, HTTP.HEADER_OK);
-					TCP.send(client,inhalt);
+					TCP.send(client, inhalt);
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			}
-			
+
 			/*
-			 * TODO Erfolgreich Meldung mit möglichkeit zum:
-			 * 		noch einen Kurs erstellen
-			 * 		zu Adminbereich zurückkehren
-			 * 		ausloggen
+			 * TODO Erfolgreich Meldung mit möglichkeit zum: noch einen Kurs
+			 * erstellen zu Adminbereich zurückkehren ausloggen
 			 */
 
 		}
@@ -948,10 +1106,11 @@ public class Command {
 		}
 		// Reagieren auf erfolgreichen bzw. nicht erfolgreichen Login
 		if (login) {
-			Print.msg(thread + " Login! User: " + username + ", Passwort: " + passwort);
+			Print.msg(thread + " Login! User: " + username + ", Passwort: "
+					+ passwort);
 			if (isLehrer) {
 				// Erfolgreicher Login des Admins
-				
+
 				synchronized (HandleConnections.LOCK) {
 					lehrer.setSessionkey();
 					lehrer.online = true;
@@ -995,8 +1154,9 @@ public class Command {
 			}
 		} else {
 			// Fehlerhafter Login
-			
-			Print.msg(thread + " Fehlerhafter Loginversuch von " + client.getInetAddress());
+
+			Print.msg(thread + " Fehlerhafter Loginversuch von "
+					+ client.getInetAddress());
 			String startseite = Misc.read(Config.getWebroot()
 					+ Config.START_PAGE);
 			startseite = startseite.replaceAll("%username%", username);
@@ -1060,7 +1220,7 @@ public class Command {
 		// Bearbeitung der Datei (Ersetzen von Makros)
 		if (filePath.equals(Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE)) {
 			inhalt = inhalt.replaceAll("%name%", "");
-			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
 			inhalt = inhalt.replaceAll("%size%", String.valueOf(""));
 			inhalt = inhalt.replaceAll("%min%", String.valueOf(""));
 			inhalt = inhalt.replaceAll("%max%", String.valueOf(""));
@@ -1071,7 +1231,7 @@ public class Command {
 		} else if (filePath.equals(Config.getWebroot()
 				+ Config.WAHL_ERSTELLEN_PAGE)) {
 			inhalt = inhalt.replaceAll("%date%", "dd:mm:yy");
-			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
 
 			inhalt = inhalt.replaceAll("%G07%", "");
 			inhalt = inhalt.replaceAll("%G08%", "");
@@ -1097,7 +1257,7 @@ public class Command {
 				+ Config.SUPER_LEHRER_PAGE)) {
 			inhalt = inhalt.replaceAll("%add%", "create");
 			inhalt = inhalt.replaceAll("%change%", "admin");
-			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
 			Kurs[] kursListe = General.wahl.getKursListe();
 			String liste = "";
 			for (int i = 0; i < kursListe.length; i++) {
@@ -1119,8 +1279,8 @@ public class Command {
 					"<input type=hidden name='sk' value='" + sessionkey + "'>");
 		} else if (filePath.equals(Config.getWebroot()
 				+ Config.KURS_UEBERSICHT_PAGE)) {
-			//TODO Beschreibung: nach ca 100 Buchstaben \n
-			
+			// TODO Beschreibung: nach ca 100 Buchstaben \n
+
 			String kurse = "";
 
 			Kurs[] kursList = General.wahl.getKursListe();

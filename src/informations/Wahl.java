@@ -18,6 +18,13 @@ public class Wahl {
 	 * 
 	 */
 	
+	/**
+	 * 
+	 * @param date Das End-Datum
+	 * @param s Die Schüler Liste
+	 * @param l Die Lehrer Liste
+	 * @throws Exception Das End-Datum liegt in der Vergangenheit
+	 */
 	public Wahl(Calendar date, Schueler[] s, Lehrer[] l) throws Exception{
 		setDate(date);
 		setSchuelerListe(s);
@@ -31,7 +38,7 @@ public class Wahl {
 		return schuelerList;
 	}
 	
-	public void setSchuelerListe(Schueler[] s){
+	private void setSchuelerListe(Schueler[] s){
 		schuelerList = s;
 	}
 	
@@ -54,7 +61,7 @@ public class Wahl {
 		return lehrerList;
 	}
 	
-	public void setLehrerListe(Lehrer[] lehrer){
+	private void setLehrerListe(Lehrer[] lehrer){
 		lehrerList = lehrer;
 	}
 	

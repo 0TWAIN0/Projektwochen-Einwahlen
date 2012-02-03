@@ -19,6 +19,8 @@ public class Config {
 	public static final String SUPER_LEHRER_PAGE = "/admin.html";
 	public static final String WAHL_ERSTELLEN_PAGE = "/create.html";
 	public static final String START_PAGE = "/login.html";
+	public static final String WAHL_ANSWER = "/answer1.html";
+	public static final String KURS_ANSWER = "/answer2.html";
 
 	public static final int MAXIMAL_KURS_GROESSE = 50;
 	public static final int MAXIMAL_JAHRGANG = 13;

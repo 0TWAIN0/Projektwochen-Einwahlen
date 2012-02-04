@@ -68,6 +68,10 @@ public class User {
 		return sessionkey;
 	}
 	
+	public void delSessionkey() {
+		sessionkey = null;
+	}
+	
 	public void setSessionkey() {
 		String sessionkey = null;
 		boolean equal = true;

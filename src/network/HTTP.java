@@ -45,7 +45,7 @@ public class HTTP {
 	private static final String COMMAND_CREATE_WAHL = "/createwahl";
 	private static final String COMMAND_ADMIN_INTERFACE = "/admin";
 	private static final String COMMAND_SHOW_KURSLIST = "/overview";
-	private static final String COMMAND_LOGOUT = "/logout"; //TODO
+	private static final String COMMAND_LOGOUT = "/logout";
 
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
@@ -71,7 +71,7 @@ public class HTTP {
 				error(client, FILE_NOT_FOUND_ERROR, thread);
 			}
 		} else {
-			String command;
+			String command = "";
 			String[] arguments = null;
 
 			// Untersuchung nach übergebenen Argumenten mit Hilfe eines '?'
@@ -82,22 +82,26 @@ public class HTTP {
 					Print.deb(thread + "Syntax Error im übergebenen Befehl.");
 					error(client, SYNTAX_ERROR, thread);
 					return;
-				}
-				command = args[0];
-				Print.deb(thread + " Command: " + command);
+				} else if (args.length < 2) {
+					command = args[0];
+					Print.deb(thread + " Command: " + command);
+				} else if (args.length == 2) {
+					command = args[0];
+					Print.deb(thread + " Command: " + command);
 
-				// Untersuchung falls mehrere Argumente durch ein '&' getrennt
-				// wurden
-				if (args[1].contains("&")) {
-					arguments = args[1].split("&");
-				} else {
-					arguments = new String[1];
-					arguments[0] = args[1];
-				}
+					// Untersuchung falls mehrere Argumente durch ein '&' getrennt
+					// wurden
+					if (args[1].contains("&")) {
+						arguments = args[1].split("&");
+					} else {
+						arguments = new String[1];
+						arguments[0] = args[1];
+					}
 
-				Print.deb(thread + " ArgsList:");
-				for (int i = 0; i < arguments.length; i++) {
-					Print.debtab(arguments[i]);
+					Print.deb(thread + " ArgsList:");
+					for (int i = 0; i < arguments.length; i++) {
+						Print.debtab(arguments[i]);
+					}
 				}
 			} else {
 				command = splitted[1];
@@ -110,7 +114,8 @@ public class HTTP {
 				try {
 					Command.login(client, arguments, thread);
 				} catch (FileNotFoundException e) {
-					Print.err(thread + " Fehler beim Lesen einer Datei");
+					Print.err(thread + " Datei wurde nicht gefunden: "
+							+ Config.getWebroot() + Config.START_PAGE);
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if (command.equals(COMMAND_SHOW_KURSLIST)) {
@@ -124,7 +129,7 @@ public class HTTP {
 					error(client, ACCESS_FORBIDDEN_ERROR, thread);
 				} catch (FileNotFoundException e) {
 					Print.err(thread + " Datei wurde nicht gefunden: "
-							+ Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+							+ Config.getWebroot() + Config.START_PAGE);
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if (command.equals(COMMAND_CREATE_KURS)) {
@@ -166,7 +171,7 @@ public class HTTP {
 					} catch (FileNotFoundException e) {
 						Print.err(thread + " Datei wurde nicht gefunden: "
 								+ Config.getWebroot()
-								+ Config.KURS_ERSTELLEN_PAGE);
+								+ Config.SUPER_LEHRER_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				} else {
@@ -181,7 +186,7 @@ public class HTTP {
 					} catch (FileNotFoundException e) {
 						Print.err(thread + " Datei wurde nicht gefunden: "
 								+ Config.getWebroot()
-								+ Config.KURS_ERSTELLEN_PAGE);
+								+ Config.SUPER_LEHRER_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				}
@@ -195,7 +200,7 @@ public class HTTP {
 					} catch (FileNotFoundException e) {
 						Print.err(thread + " Datei wurde nicht gefunden: "
 								+ Config.getWebroot()
-								+ Config.KURS_ERSTELLEN_PAGE);
+								+ Config.WAHL_ERSTELLEN_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				} else {
@@ -209,7 +214,7 @@ public class HTTP {
 					} catch (FileNotFoundException e) {
 						Print.err(thread + " Datei wurde nicht gefunden: "
 								+ Config.getWebroot()
-								+ Config.KURS_ERSTELLEN_PAGE);
+								+ Config.WAHL_ERSTELLEN_PAGE);
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				}
@@ -225,6 +230,13 @@ public class HTTP {
 				} catch (FileNotFoundException e) {
 					Print.err(thread + " Datei wurde nicht gefunden: "
 							+ Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+					error(client, FILE_NOT_FOUND_ERROR, thread);
+				}
+			} else if (command.equals(COMMAND_LOGOUT)) {
+				try {
+					Command.logout(client, arguments, thread);
+				} catch (FileNotFoundException e) {
+					Print.err(thread + "Die Logout Seite wurde nicht gefunden!");
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else {

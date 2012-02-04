@@ -20,7 +20,56 @@ import misc.Print;
 public class Command {
 
 	// TODO THREAD SAVE!!
-
+	
+	/**
+	 * Behalndelt Logout - Versuche
+	 * @param client
+	 * @param args
+	 * @param thread
+	 * @throws FileNotFoundException
+	 */
+	public static void logout(Socket client, String[] args, Thread thread) throws FileNotFoundException{
+		// Ueberpruefung des Sessionkeys und der anderen Argumente
+			if (args == null) {
+				throw new SecurityException(
+						"Der Benutzer konnte nicht verifiziert werden!");
+			}
+			String[][] arguments = handleArgs(args);
+			String sessionkey = null;
+			int userType = User.USER;
+			
+			for (int i = 0; i < arguments.length; i++) {
+				if (arguments[i][0].equals("sk")) {
+					sessionkey = arguments[i][1];
+				} 
+			}
+			
+			if (!checkSK(sessionkey, userType)) {
+				try {
+					Print.deb(thread + "Fehlerhaftes logout!");
+					TCP.send(client, HTTP.HEADER_ACCESS_FORBIDDEN);
+					TCP.send(client, "<script>alert('Du warst nicht eingeloggt!');</script>");
+				}catch(IOException e){
+					Print.err(thread + " Fehler beim Sende an einen Client");
+				}
+				return;
+			}
+			
+			User user = User.getUserBySk(sessionkey);
+			user.online = false;
+			user.delSessionkey();
+			
+			String inhalt = Misc.read(Config.getWebroot() + Config.LOGOUT_PAGE);
+			
+			try {
+				Print.msg(thread + " Der User " + user.getName() + " hat sich ausgeloggt!");
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client, inhalt);
+			}catch(IOException e){
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
+	}
+	
 	/**
 	 * Bearbeitung von Admin-Aktivitaeten
 	 * 
@@ -489,7 +538,7 @@ public class Command {
 
 		// Eingaben auf Fehler pruefen
 		String errorMessage = "";
-		if (General.wahl != null){
+		if (General.wahl != null) {
 			errorMessage += "Es wurde bereits eine Wahl erstellt!%0A";
 		}
 		if (date.equals("")) {
@@ -548,7 +597,7 @@ public class Command {
 					+ Config.WAHL_ERSTELLEN_PAGE);
 
 			page = page.replaceAll("%date%", date);
-			page = page.replaceAll("%logout%", "logout?sk=" +sessionkey);
+			page = page.replaceAll("%logout%", "logout?sk=" + sessionkey);
 
 			page = page.replaceAll("%G07%", String.valueOf(g07));
 			page = page.replaceAll("%G08%", String.valueOf(g08));
@@ -581,165 +630,185 @@ public class Command {
 			}
 		} else {
 			int schueler = 0;
-			schueler = g07 + g08 + g09 + g10 + g11 + g12 + r07 + r08 + r09 + r10 + h07 + h08 + h09 + h10;
+			schueler = g07 + g08 + g09 + g10 + g11 + g12 + r07 + r08 + r09
+					+ r10 + h07 + h08 + h09 + h10;
 			Schueler[] schuelerListe = new Schueler[schueler];
 			Lehrer[] lehrerListe = new Lehrer[teacher];
 			int schuelerIndex = 0;
-			//Schueler generieren
-			for (int i = 1; i <= g07;i++){
+			// Schueler generieren
+			for (int i = 1; i <= g07; i++) {
 				String name = "G07" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 7;
 				String schulzweig = "G";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= g08;i++){
+			for (int i = 1; i <= g08; i++) {
 				String name = "G08" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 8;
 				String schulzweig = "G";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= g09;i++){
+			for (int i = 1; i <= g09; i++) {
 				String name = "G09" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 9;
 				String schulzweig = "G";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= g10;i++){
+			for (int i = 1; i <= g10; i++) {
 				String name = "G10" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 10;
 				String schulzweig = "G";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= g11;i++){
+			for (int i = 1; i <= g11; i++) {
 				String name = "G11" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 11;
 				String schulzweig = "G";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= g12;i++){
+			for (int i = 1; i <= g12; i++) {
 				String name = "G12" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 12;
 				String schulzweig = "G";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			
-			for (int i = 1; i <= r07;i++){
+
+			for (int i = 1; i <= r07; i++) {
 				String name = "R07" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 7;
 				String schulzweig = "R";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= r08;i++){
+			for (int i = 1; i <= r08; i++) {
 				String name = "R08" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 8;
 				String schulzweig = "R";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= r09;i++){
+			for (int i = 1; i <= r09; i++) {
 				String name = "R09" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 9;
 				String schulzweig = "R";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= r10;i++){
+			for (int i = 1; i <= r10; i++) {
 				String name = "R10" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 10;
 				String schulzweig = "R";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= h07;i++){
+			for (int i = 1; i <= h07; i++) {
 				String name = "H07" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 7;
 				String schulzweig = "H";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= h08;i++){
+			for (int i = 1; i <= h08; i++) {
 				String name = "H08" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 8;
 				String schulzweig = "H";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= h09;i++){
+			for (int i = 1; i <= h09; i++) {
 				String name = "H09" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 9;
 				String schulzweig = "H";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			for (int i = 1; i <= h10;i++){
+			for (int i = 1; i <= h10; i++) {
 				String name = "H10" + i;
 				String passwort = Misc.gen(6);
 				int jahrgang = 10;
 				String schulzweig = "H";
-				schuelerListe[schuelerIndex] = new Schueler(name, passwort, jahrgang, schulzweig);
-				schuelerIndex ++;
+				schuelerListe[schuelerIndex] = new Schueler(name, passwort,
+						jahrgang, schulzweig);
+				schuelerIndex++;
 			}
-			
-			//Lehrer generieren
-			for (int i = 0; i <lehrerListe.length;i++){
+
+			// Lehrer generieren
+			for (int i = 0; i < lehrerListe.length; i++) {
 				String name = "LEHRER" + i;
 				String passwort = Misc.gen(6);
 				lehrerListe[i] = new Lehrer(name, passwort);
 			}
 			
-			
+			//Answerpage zurueck senden
 			String inhalt = Misc.read(Config.getWebroot() + Config.WAHL_ANSWER);
-			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" +sessionkey);
-			inhalt = inhalt.replaceAll("%action%", "admin?sk=" + sessionkey);
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
+			inhalt = inhalt.replaceAll("%hidden%",
+					"<input type=hidden name='sk' value='" + sessionkey + "'>");
+			inhalt = inhalt.replaceAll("%action%", "admin");
 			String schuelerL = "";
-			for (int i = 0; i<schuelerListe.length; i++){
-				schuelerL += "<tr> + " +
-						"<td align='left' style='width:150px;'>"+ schuelerListe[i].getName() + "</td>"+
-						"<td align='left' style='width:150px;'>"+ schuelerListe[i].getPasswort() +"</td></tr>";
+			for (int i = 0; i < schuelerListe.length; i++) {
+				schuelerL += "<tr> + "
+						+ "<td align='left' style='width:150px;'>"
+						+ schuelerListe[i].getName() + "</td>"
+						+ "<td align='left' style='width:150px;'>"
+						+ schuelerListe[i].getPasswort() + "</td></tr>";
 			}
-			inhalt = inhalt.replaceAll("%schueler%",schuelerL);
+			inhalt = inhalt.replaceAll("%schueler%", schuelerL);
 			String lehrerL = "";
-			for (int i = 0; i<lehrerListe.length; i++){
-				lehrerL += "<tr> + " +
-						"<td align='left' style='width:150px;'>"+ lehrerListe[i].getName() + "</td>"+
-						"<td align='left' style='width:150px;'>"+ lehrerListe[i].getPasswort() +"</td></tr>";
+			for (int i = 0; i < lehrerListe.length; i++) {
+				lehrerL += "<tr> + " + "<td align='left' style='width:150px;'>"
+						+ lehrerListe[i].getName() + "</td>"
+						+ "<td align='left' style='width:150px;'>"
+						+ lehrerListe[i].getPasswort() + "</td></tr>";
 			}
-			inhalt = inhalt.replaceAll("%lehrer%",lehrerL);
-			
+			inhalt = inhalt.replaceAll("%lehrer%", lehrerL);
+
 			try {
 				General.wahl = new Wahl(cal, schuelerListe, lehrerListe);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-			 
+
 			User u = User.getUserBySk(sessionkey);
 			String uname = "";
-			if (u == null){
+			if (u == null) {
 				uname = "UNKNOWN";
-			}else{
+			} else {
 				uname = u.getName();
 			}
-			Print.msg(thread + "Wahl wurde von "+ uname + " erstellt");
+			Print.msg(thread + "Wahl wurde von " + uname + " erstellt");
 			try {
 				TCP.send(client, HTTP.HEADER_OK);
 				TCP.send(client,
@@ -816,6 +885,10 @@ public class Command {
 		if (!checkSK(sessionkey, userType)) {
 			throw new SecurityException(
 					"Der Benutzer konnte nicht verifiziert werden! Falscher Sessionkey!");
+		}
+		User user = User.getUserBySk(sessionkey);
+		if (user instanceof Admin){
+			userType = Admin.ADMIN;
 		}
 
 		Print.deb(thread + "Nutzer verifiziert!");
@@ -955,11 +1028,26 @@ public class Command {
 						+ " von " + uname);
 				General.wahl
 						.addKurs(new Kurs(name, description, size, min, max));
-				Print.deb(thread + "Kurs wurder erfolgreich hinzugefügt!");
+
+				String inhalt = Misc.read(Config.getWebroot()
+						+ Config.KURS_ANSWER);
+				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
+						+ sessionkey);
+				inhalt = inhalt.replaceAll("%message%",
+						"Der Kurs wurde erfolgreich erstellt!");
+				inhalt = inhalt.replaceAll("%hidden%",
+						"<input type=hidden name='sk' value='" + sessionkey + "'>");
+				if (userType == Lehrer.LEHRER) {
+					inhalt = inhalt.replaceAll("%button%", "Noch einen Kurs erstellen!");
+					inhalt = inhalt.replaceAll("%action%", "create");
+				} else if (userType == Admin.ADMIN){
+					inhalt = inhalt.replaceAll("%button%", "Zur&uuml;ck zur Adminoberfl&auml;che!");
+					inhalt = inhalt.replaceAll("%action%", "admin");	
+				}
+
 				try {
 					TCP.send(client, HTTP.HEADER_OK);
-					TCP.send(client,
-							"<script>alert('Der Kurs wurde erfolgreich erstellt!');</script>");
+					TCP.send(client,inhalt);
 				} catch (IOException e) {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
@@ -979,38 +1067,19 @@ public class Command {
 				kursToChange.setKursgroesse(size);
 				kursToChange.setJahrgangsberechtigungMin(min);
 				kursToChange.setJahrgangsberechtigungMax(max);
-				Print.deb(thread + "Kurs wurder erfolgreich geändert!");
 
 				String inhalt = Misc.read(Config.getWebroot()
-						+ Config.SUPER_LEHRER_PAGE);
-
-				inhalt = inhalt.replaceAll("%add%", "create");
-				inhalt = inhalt.replaceAll("%change%", "admin");
+						+ Config.KURS_ANSWER);
+				
 				inhalt = inhalt.replaceAll("%logout%", "logout?sk="
 						+ sessionkey);
-				String liste = "";
-				Kurs[] kursListe = General.wahl.getKursListe();
-				for (int i = 0; i < kursListe.length; i++) {
-					if (i == 0) {
-						liste = liste + "<option selected>"
-								+ kursListe[i].getName() + "</option>";
-					} else {
-						liste = liste + "<option>" + kursListe[i].getName()
-								+ "</option>";
-					}
-				}
-				inhalt = inhalt.replaceAll("%kursliste%", liste);
-				inhalt = inhalt.replaceAll("%overview%", "overview?sk="
-						+ sessionkey);
-				inhalt = inhalt.replaceAll("%delkurs%", "admin");
-				inhalt = inhalt.replaceAll("%create%", "createwahl");
-				inhalt = inhalt.replaceAll("%cancel%", "admin");
+				inhalt = inhalt.replaceAll("%message%",
+						"Der Kurs wurde erfolgreich ge&auml;ndert!");
 				inhalt = inhalt.replaceAll("%hidden%",
-						"<input type=hidden name='sk' value='" + sessionkey
-								+ "'>");
-				inhalt = inhalt
-						+ "<script>alert(unescape('Der Kurs wurde erfolgreich ge%E4ndert!'));</script>";
-
+						"<input type=hidden name='sk' value='" + sessionkey + "'>");
+				inhalt = inhalt.replaceAll("%button%", "Zur&uuml;ck zur Adminoberfl&auml;che!");
+				inhalt = inhalt.replaceAll("%action%", "admin");	
+				
 				try {
 					TCP.send(client, HTTP.HEADER_OK);
 					TCP.send(client, inhalt);
@@ -1018,11 +1087,6 @@ public class Command {
 					Print.err(thread + " Fehler beim Sende an einen Client");
 				}
 			}
-
-			/*
-			 * TODO Erfolgreich Meldung mit möglichkeit zum: noch einen Kurs
-			 * erstellen zu Adminbereich zurückkehren ausloggen
-			 */
 
 		}
 	}
@@ -1279,17 +1343,28 @@ public class Command {
 					"<input type=hidden name='sk' value='" + sessionkey + "'>");
 		} else if (filePath.equals(Config.getWebroot()
 				+ Config.KURS_UEBERSICHT_PAGE)) {
-			// TODO Beschreibung: nach ca 100 Buchstaben \n
 
 			String kurse = "";
 
 			Kurs[] kursList = General.wahl.getKursListe();
+			//Kurslisten erstellen
 			for (int k = 0; k < kursList.length; k++) {
+				// Zeilenumbruch nach 75 Zeichen in Beschreibung einfuegen
+				String beschreibung = kursList[k].getBeschreibung();
+				String[] beschrSplit = beschreibung.split("");
+				beschreibung = "";
+				for (int i = 0; i < beschrSplit.length; i++){
+					beschreibung += beschrSplit[i];
+					if (((i+1)%75) == 0){
+						beschreibung += "<br>";
+					}
+				}
+				
 				kurse = kurse + "<tr>"
 						+ "<td align='left' style='width:150px;'>"
 						+ kursList[k].getName() + "</td>"
 						+ "<td align='left' style='width:500px;'>"
-						+ kursList[k].getBeschreibung() + "</td>"
+						+ beschreibung + "</td>"
 						+ "<td align='left' style='width:100px;'>"
 						+ kursList[k].getJahrgangsberechtigungMin() + " - "
 						+ kursList[k].getJahrgangsberechtigungMax() + "</td>"
@@ -1363,72 +1438,19 @@ public class Command {
 		}
 
 		boolean authorized = false;
-		if (userType == Lehrer.LEHRER) {
-			Lehrer[] userList = General.wahl.getLehrerList();
-			for (int i = 0; i < userList.length; i++) {
-				if (sessionkey.equals(userList[i].getSessionkey())) {
-					if (userList[i].online) {
-						authorized = true;
-						break;
-					}
-				}
+		User user = User.getUserBySk(sessionkey);
+		if (user != null){
+			if (userType == Lehrer.LEHRER) {
+				authorized = (user instanceof Lehrer) || (user instanceof Admin);
+			} else if (userType == Schueler.SCHUELER) {
+				authorized = (user instanceof Schueler) || (user instanceof Admin);
+			} else if (userType == Admin.ADMIN) {
+				authorized = user instanceof Admin;
+			} else if (userType == User.USER) {
+				authorized = (user instanceof Lehrer) || (user instanceof Admin) || (user instanceof Schueler);
 			}
-			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
-				if (General.wahl.admin.online) {
-					authorized = true;
-				}
-			}
-		} else if (userType == Schueler.SCHUELER) {
-			Schueler[] userList = General.wahl.getSchuelerList();
-			for (int i = 0; i < userList.length; i++) {
-				if (sessionkey.equals(userList[i].getSessionkey())) {
-					if (userList[i].online) {
-						authorized = true;
-						break;
-					}
-				}
-			}
-			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
-				if (General.wahl.admin.online) {
-					authorized = true;
-				}
-			}
-		} else if (userType == Admin.ADMIN) {
-			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
-				if (General.wahl.admin.online) {
-					authorized = true;
-				}
-			}
-
-		} else if (userType == User.USER) {
-			User[] userList = General.wahl.getLehrerList();
-			for (int i = 0; i < userList.length; i++) {
-				if (sessionkey.equals(userList[i].getSessionkey())) {
-					if (userList[i].online) {
-						authorized = true;
-						break;
-					}
-				}
-			}
-
-			userList = General.wahl.getSchuelerList();
-			for (int i = 0; i < userList.length; i++) {
-				if (sessionkey.equals(userList[i].getSessionkey())) {
-					if (userList[i].online) {
-						authorized = true;
-						break;
-					}
-				}
-			}
-
-			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
-				if (General.wahl.admin.online) {
-					authorized = true;
-				}
-			}
-
 		}
-
+		
 		if (!authorized) {
 			return false;
 		}

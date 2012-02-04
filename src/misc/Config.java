@@ -21,9 +21,10 @@ public class Config {
 	public static final String START_PAGE = "/login.html";
 	public static final String WAHL_ANSWER = "/answer1.html";
 	public static final String KURS_ANSWER = "/answer2.html";
+	public static final String LOGOUT_PAGE = "/logout.html";
 
 	public static final int MAXIMAL_KURS_GROESSE = 50;
-	public static final int MAXIMAL_JAHRGANG = 13;
+	public static final int MAXIMAL_JAHRGANG = 12;
 	public static final int MINIMAL_JAHRGANG = 07;
 
 	public static final boolean DEBUGING = true;

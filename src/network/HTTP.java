@@ -46,6 +46,7 @@ public class HTTP {
 	private static final String COMMAND_ADMIN_INTERFACE = "/admin";
 	private static final String COMMAND_SHOW_KURSLIST = "/overview";
 	private static final String COMMAND_LOGOUT = "/logout";
+	private static final String COMMAND_GEN = "/gen";
 
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
@@ -72,7 +73,7 @@ public class HTTP {
 			}
 		} else {
 			String command = "";
-			String[] arguments = null;
+			String[] arguments = new String[0];
 
 			// Untersuchung nach übergebenen Argumenten mit Hilfe eines '?'
 			if (splitted[1].contains("?")) {
@@ -235,6 +236,16 @@ public class HTTP {
 			} else if (command.equals(COMMAND_LOGOUT)) {
 				try {
 					Command.logout(client, arguments, thread);
+				} catch (FileNotFoundException e) {
+					Print.err(thread + "Die Logout Seite wurde nicht gefunden!");
+					error(client, FILE_NOT_FOUND_ERROR, thread);
+				}
+			} else if (command.equals(COMMAND_GEN)) {
+				try {
+					Command.gen(client, arguments, thread);
+				} catch (SecurityException e) {
+					Print.msg(thread + " Fehlgeschlagene Verifikation!");
+					error(client, ACCESS_FORBIDDEN_ERROR, thread);
 				} catch (FileNotFoundException e) {
 					Print.err(thread + "Die Logout Seite wurde nicht gefunden!");
 					error(client, FILE_NOT_FOUND_ERROR, thread);

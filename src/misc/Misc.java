@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class Misc {
 
 	public static String gen(int lenght) {
+		//TODO Buchstaben mit integrieren
 		String key = "";
 
 		Random gen = new Random();

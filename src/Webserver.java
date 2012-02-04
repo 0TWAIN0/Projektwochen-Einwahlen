@@ -1,6 +1,4 @@
 
-import informations.General;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,8 +37,6 @@ public class Webserver {
 		} catch (FileNotFoundException e1) {
 			Print.err("Fehler beim Lesen der Konfigurationsdatei und der AllowedFiles Liste!");
 		}
-		
-		new General();
 
 		// Der Port an dem der Server lauschen soll
 		final int port = Config.getPort();

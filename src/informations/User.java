@@ -75,28 +75,32 @@ public class User {
 	public void setSessionkey() {
 		String sessionkey = null;
 		boolean equal = true;
-		Lehrer[] lehrer = General.wahl.getLehrerList();
-		Schueler[] schueler = General.wahl.getSchuelerList();
-
-		while (equal) {
+		if (General.wahl != null){
+			Lehrer[] lehrer = General.wahl.getLehrerList();
+			Schueler[] schueler = General.wahl.getSchuelerList();
+			while (equal) {
+				sessionkey = Misc.gen(10);
+				equal = false;
+				for (int i = 0; i < lehrer.length; i++) {
+					if (sessionkey.equals(lehrer[i].getSessionkey())) {
+						equal = true;
+						break;
+					}
+				}
+				for (int i = 0; i < schueler.length; i++) {
+					if (sessionkey.equals(schueler[i].getSessionkey())) {
+						equal = true;
+						break;
+					}
+				}
+				if (sessionkey.equals(General.admin.getSessionkey())) {
+					equal = true;
+				}
+			}
+		} else{
 			sessionkey = Misc.gen(10);
-			equal = false;
-			for (int i = 0; i < lehrer.length; i++) {
-				if (sessionkey.equals(lehrer[i].getSessionkey())) {
-					equal = true;
-					break;
-				}
-			}
-			for (int i = 0; i < schueler.length; i++) {
-				if (sessionkey.equals(schueler[i].getSessionkey())) {
-					equal = true;
-					break;
-				}
-			}
-			if (sessionkey.equals(General.wahl.admin.getSessionkey())) {
-				equal = true;
-			}
 		}
+		
 		this.sessionkey = sessionkey;
 	}
 	

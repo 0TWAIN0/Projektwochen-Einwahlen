@@ -12,9 +12,13 @@
 			return false;
 		}
 		function conf(msg){
-			Conf = confirm(unescape(msg));
-			if (Conf == true){
-				document.forms[3].submit();
+			if (document.getElementById("delkurs").value == ""){
+				alert(unescape("Es wurde noch keine Wahl erstellt oder es wurde kein Kurs ausgew%E4hlt!"));
+			} else {
+				Conf = confirm(unescape(msg));
+				if (Conf == true){
+					document.forms[4].submit();
+				}
 			}
 		}
 	</script>
@@ -31,6 +35,12 @@
 		 	<form action="%add%" name="form1" >
 				%hidden%
 		   		<input type="submit" value="Kurs hinzuf&uuml;gen">
+			</form>
+		</div>
+		<div id="Layer2" style="position:absolute;z-index:8; left: 539px; top: 151px"> 
+		 	<form action="gen" name="form1" >
+				%hidden%
+		   		<input type="submit" value="Wahl generieren">
 			</form>
 		</div>
 		<div id="Layer3" style="position:absolute;z-index:8; left: 670px; top: 191px"> 
@@ -56,7 +66,7 @@
 		  	<form action="%delkurs%" name="form4" >
 				%hidden%
 		    		<p>
-		      		<select name="delkurs">
+		      		<select id="delkurs" name="delkurs">
 					%kursliste%
 		      		</select>
 				<input type="button" value="Kurs l&ouml;schen" onclick="conf('Wollen Sie diesen Kurs wirklich l%F6schen?')">

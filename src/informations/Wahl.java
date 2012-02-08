@@ -10,6 +10,7 @@ public class Wahl {
 	private Kurs[] kursListe = new Kurs[0];
 	private Calendar date;
 	private boolean running = false;
+	public boolean ausgewertet = false;
 	//private String endDate;
 	/* - Schüler Liste und Lehrer Liste sollten im Konstuktor angegeben werden
 	 * 		- späteres verändern nicht möglich

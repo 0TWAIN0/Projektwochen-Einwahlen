@@ -46,6 +46,8 @@ public class HTTP {
 	private static final String COMMAND_SHOW_KURSLIST = "/overview";
 	private static final String COMMAND_LOGOUT = "/logout";
 	private static final String COMMAND_GEN = "/gen";
+	private static final String COMMAND_VGEN = "/vgen";
+	private static final String COMMAND_AUSWERTEN = "/eval";
 
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
@@ -251,7 +253,27 @@ public class HTTP {
 					Print.msg(thread + " Fehlgeschlagene Verifikation!");
 					error(client, ACCESS_FORBIDDEN_ERROR, thread);
 				} catch (FileNotFoundException e) {
-					Print.err(thread + "Die Logout Seite wurde nicht gefunden!");
+					Print.err(thread + "Die Gen Seite wurde nicht gefunden!");
+					error(client, FILE_NOT_FOUND_ERROR, thread);
+				}
+			} else if (command.equals(COMMAND_VGEN)) {
+				try {
+					Command.vgen(client, arguments, thread);
+				} catch (SecurityException e) {
+					Print.msg(thread + " Fehlgeschlagene Verifikation!");
+					error(client, ACCESS_FORBIDDEN_ERROR, thread);
+				} catch (FileNotFoundException e) {
+					Print.err(thread + "Die Vgen Seite wurde nicht gefunden!");
+					error(client, FILE_NOT_FOUND_ERROR, thread);
+				}
+			} else if (command.equals(COMMAND_AUSWERTEN)) {
+				try {
+					Command.eval(client, arguments, thread);
+				} catch (SecurityException e) {
+					Print.msg(thread + " Fehlgeschlagene Verifikation!");
+					error(client, ACCESS_FORBIDDEN_ERROR, thread);
+				} catch (FileNotFoundException e) {
+					Print.err(thread + "Die Auswerten Seite wurde nicht gefunden!");
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else {

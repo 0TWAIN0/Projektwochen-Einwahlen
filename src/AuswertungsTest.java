@@ -10,7 +10,7 @@ public class AuswertungsTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int[][] out = new int[500][7];
+		int[][] out = new int[500][8];
 
 		for (int i = 0; i < out.length; i++) {
 			// erstelle Kurse
@@ -54,15 +54,12 @@ public class AuswertungsTest {
 				System.exit(0);
 			}
 
-			Auswertung eval = new Auswertung();
-			Print.deb("###Starte Auswertung! Schüler: " + schuelerListe.length + " Kurse: " + kursListe.length + " Plätze: " + plaetze);
+			Print.msg("###Starte Auswertung! Schüler: " + schuelerListe.length + " Kurse: " + kursListe.length + " Plätze: " + plaetze);
 			long time = System.currentTimeMillis();
-			out[i] = eval.auswerten(schuelerListe, kursListe);
+			out[i] = Auswertung.auswerten(schuelerListe, kursListe);
 			long ftime = System.currentTimeMillis();
-			Print.deb("###Fertig mit der Auswertung nach " + (ftime - time)
-					+ " Millisekunden!");
-			out[i][5] = schuelerListe.length;
-			out[i][6] = (int) (ftime - time);
+			out[i][6] = schuelerListe.length;
+			out[i][7] = (int) (ftime - time);
 			Print.deb(out[i][0] + " " + out[i][1] + " " + out[i][2] + " " + out[i][3] + " " + out[i][4] + " " + out[i][5] + " " + out[i][6]);
 		}
 		
@@ -76,7 +73,7 @@ public class AuswertungsTest {
 			drittwunsch += out[i][3];
 			zweitwunsch += out[i][2];
 			erstwunsch += out[i][1];
-			zeit += out[i][6];
+			zeit += out[i][7];
 		}
 		
 		Print.deb("Es wurden " + erstwunsch + " Erstwünsche, " + zweitwunsch + " Zweitwünsche und " + drittwunsch + " erreicht.");

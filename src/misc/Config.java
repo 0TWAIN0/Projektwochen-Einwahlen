@@ -22,13 +22,14 @@ public class Config {
 	public static final String WAHL_ANSWER = "/answer1.html";
 	public static final String KURS_ANSWER = "/answer2.html";
 	public static final String KURS_WAHL_ANSWER = "/answer3.html";
+	public static final String KURS_AUSWERTUNG_ANSWER = "/answer4.html";
 	public static final String LOGOUT_PAGE = "/logout.html";
 
 	public static final int MAXIMAL_KURS_GROESSE = 50;
 	public static final int MAXIMAL_JAHRGANG = 12;
 	public static final int MINIMAL_JAHRGANG = 07;
 
-	public static final boolean DEBUGING = true;
+	public static final boolean DEBUGING = false;
 	private static int port;
 	private static String webroot;
 	private static String errorPage;

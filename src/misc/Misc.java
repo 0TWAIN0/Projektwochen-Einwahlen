@@ -139,4 +139,13 @@ public class Misc {
 
 	    return sbuf.toString() ;
 	}
+	
+	public static String[] stringValueOf(Object[] obj){
+		String[] string = new String[obj.length];
+		for (int i = 0; i < obj.length; i++){
+			string[i] = String.valueOf(obj[i]);
+		}
+		return string;
+	}
+	
 }

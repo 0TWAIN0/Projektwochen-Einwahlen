@@ -1,5 +1,6 @@
 package evaluation;
 
+import misc.Array;
 import misc.Misc;
 import misc.Print;
 import informations.Kurs;
@@ -7,8 +8,24 @@ import informations.Schueler;
 
 public class Auswertung {
 
-	public int[] auswerten(Schueler[] schueler, Kurs[] kurs) {
+	public static int[] auswerten(Schueler[] schueler, Kurs[] kurs) {
 
+		Print.msg("Beginne mit Auswertung!");
+		long startTime = System.currentTimeMillis();
+		
+		//Ueberpruefung ob jemand nihct gewaehlt hat
+		Schueler[] oldSchueler = schueler;
+		schueler = new Schueler[0];
+		for (int i = 0; i < oldSchueler.length; i++) {
+			Kurs erstwunsch = oldSchueler[i].getErstwunsch();
+			Kurs zweitwunsch = oldSchueler[i].getZweitwunsch();
+			Kurs drittwunsch = oldSchueler[i].getDrittwunsch();
+			if (erstwunsch != null && zweitwunsch != null && drittwunsch != null){
+				schueler = Schueler.valueOf(Array.addField(schueler));
+				schueler[schueler.length-1] = oldSchueler[i];
+			}
+		}
+		
 		// Schueler den Erstwuenschen zuteilen
 		Print.deb("Verschiebe Schüler zum Erstwunsch");
 		for (int i = 0; i < schueler.length; i++) {
@@ -20,17 +37,6 @@ public class Auswertung {
 				}
 			}
 		}
-
-		// Kurze Kurs uebersicht
-//		for (int k = 0; k < kurs.length; k++) {
-//			String teilies = "";
-//			for (int s = 0; s < kurs[k].getSchuelerliste().length; s++) {
-//				teilies += kurs[k].getSchuelerliste()[s].getName() + "; ";
-//			}
-//			Print.msg("KursName: " + kurs[k].getName() + " Größe: "
-//					+ kurs[k].getTatsaechlicheKursgroesse() + " Schüler: "
-//					+ teilies);
-//		}
 
 		// Ueberpruefung auf Ueberfullung der Kurse && Verschiebung moeglicher
 		// Schueler in 2.Wunsch
@@ -208,29 +214,25 @@ public class Auswertung {
 			}
 		}
 		
-		Print.deb(ueberf + " Kurse sind überfüllt");
-		Print.deb("Es gibt " + erstwunsch + " Erstwünsche, " + zweitwunsch
-				+ " Zweitwünsche und " + drittwunsch + " Drittwünsche!");
-		Print.deb("Es müssen noch " + verteilen + " Schüler verteilt werden!");
+		long finishTime = System.currentTimeMillis();
 		
-		int[] feedback = new int[7];
+		Print.msg(ueberf + " Kurse sind überfüllt");
+		Print.msg("Es gibt " + erstwunsch + " Erstwünsche, " + zweitwunsch
+				+ " Zweitwünsche und " + drittwunsch + " Drittwünsche!");
+		Print.msg("Es müssen noch " + verteilen + " Schüler verteilt werden!");
+		Print.msg("Es haben sich " + (oldSchueler.length - schueler.length) + " Schüler nicht eingewählt!");
+		Print.msg("Die Auswertung war nach " + (finishTime - startTime) + " Millisekunden fertig!");
+		
+		int[] feedback = new int[8];
 		feedback[0] = ueberf;
 		feedback[1] = erstwunsch;
 		feedback[2] = zweitwunsch;
 		feedback[3] = drittwunsch;
-		feedback[4] = verteilen;				
+		feedback[4] = verteilen;	
+		feedback[5] = oldSchueler.length - schueler.length;
 		
 		return feedback;
 	}
 
-//	private boolean checkAufUeberfuellung(Kurs[] kurs) {
-//		for (int i = 0; i < kurs.length; i++) {
-//			if (kurs[i].getKursgroesse() < kurs[i]
-//					.getTatsaechlicheKursgroesse()) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
 
 }

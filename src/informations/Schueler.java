@@ -91,4 +91,16 @@ public class Schueler extends User {
 	public void setDrittwunsch(Kurs drittwunsch) {
 		this.drittwunsch = drittwunsch;
 	}
+	
+	public static Schueler valueOf(Object obj) {
+		Schueler s = (Schueler)obj;
+		return s;		
+	}
+	public static Schueler[] valueOf(Object[] obj) {
+		Schueler[] schuelerList = new Schueler[obj.length];
+		for (int i = 0 ; i < obj.length; i++){
+			schuelerList[i] = Schueler.valueOf(obj[i]);
+		}
+		return schuelerList;
+	}
 }

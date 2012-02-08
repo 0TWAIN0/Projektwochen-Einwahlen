@@ -188,4 +188,32 @@ public class General {
 			wahl.addKurs(new Kurs("Kurs " + i,"Beschreibung",10,07,12));
 		}
 	}
+	
+	public static void vgen() throws Exception{
+		if (wahl == null){
+			throw new Exception("Es existiert noch keine Wahl!");
+		}
+		
+		Schueler[] schuelerListe = wahl.getSchuelerList();
+		Kurs[] kursListe = wahl.getKursListe();
+		for (int s = 0; s < schuelerListe.length; s++) {
+			int erstwunsch = Misc.gen(0, kursListe.length);
+			int zweitwunsch = Misc.gen(0, kursListe.length);
+			int drittwunsch = Misc.gen(0, kursListe.length);
+			while (true) {
+				zweitwunsch = Misc.gen(0, kursListe.length);
+				drittwunsch = Misc.gen(0, kursListe.length);
+				if (zweitwunsch != erstwunsch) {
+					if (zweitwunsch != drittwunsch) {
+						if (erstwunsch != drittwunsch) {
+							break;
+						}
+					}
+				}
+			}
+			schuelerListe[s].setErstwunsch(kursListe[erstwunsch]);
+			schuelerListe[s].setZweitwunsch(kursListe[zweitwunsch]);
+			schuelerListe[s].setDrittwunsch(kursListe[drittwunsch]);
+		}
+	}
 }

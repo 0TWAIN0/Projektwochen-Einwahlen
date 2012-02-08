@@ -6,6 +6,21 @@
 
 	<body bgcolor="#FFFFFF">
 
+		<script type="text/javascript">
+		function pop(file,windowname,features)
+		{
+			helpwindow = window.open(file,windowname,features);
+			helpwindow.focus();
+			return false;
+		}
+		function conf(msg){
+			Conf = confirm(unescape(msg));
+			if (Conf == true){
+				document.forms[1].submit();
+			}
+		}
+		</script>
+
 		<div id="Layer2" style="position:absolute; width:599px; height:89px; z-index:2; left: 400px; top: 35px"> 
 		  <p align="center"><font size="+7">Bitte Ausf&uuml;llen</font></p>
 		</div>
@@ -13,12 +28,13 @@
 			<p><a href="%logout%">Logout</a></p>
 		</div>
 		<div id="Layer5" style="position:absolute; width:599px; z-index:5; left: 400px; top: 140px">
-			<form action="over" name="form0" >
-				<div align="center"><input type="submit" value="Projekt &Uuml;bersicht"></div>
-			</form>
+			<form align="center" name="form0" >
+		    		<input type="submit" name="view" value="Kurs&uuml;bersicht" href="%overview%" target="_blank" onclick="return pop('%overview%','pophelp','f1,f2,f3')" >
+		  	</form>
 		</div>
 		<div id="Layer5" style="position:absolute; width:599px; z-index:5; left: 400px; top: 200px"> 
 			<form action="vote" name="form1" >
+				%hidden%
 				<p><div align="center">Erstwunsch: </div>
 				<div align="center"><select name="first">
 					<!--<option>kurs 1asdasd</option>
@@ -37,7 +53,7 @@
 				</select></p></div>
 		
 				<div align="center">
-				<input type="submit" value="Abschicken"></div>
+				<input type="button" value="Abschicken" onclick="conf('Bist du dir mit dieser Wahl sicher?')"></div>
 
 			</form>
 		</div>

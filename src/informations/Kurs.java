@@ -4,6 +4,9 @@ import misc.Array;
 import misc.Print;
 
 public class Kurs {
+	
+	private static Kurs[] kursListe = new Kurs[0];
+	
 	private String name;
 	private String beschreibung;
 	private int kursgroesse;
@@ -18,6 +21,8 @@ public class Kurs {
 		setKursgroesse(kursgroesse);
 		setJahrgangsberechtigungMin(jahrgangsberechtigungMin);
 		setJahrgangsberechtigungMax(jahrgangsberechtigungMax);
+		kursListe = Kurs.valueOf(Array.addField(kursListe));
+		kursListe[kursListe.length-1] = this;
 	}
 	
 	/**
@@ -169,6 +174,29 @@ public class Kurs {
 		}
 		
 		return false;
+	}
+	
+	public static Kurs getKursByName(String name){
+		Kurs kurs = null;
+		for (int k = 0; k < kursListe.length; k++){
+			if (kursListe[k].getName().equals(name)){
+				kurs = kursListe[k];
+				break;
+			}
+		}
+		return kurs;
+	}
+	
+	public static Kurs valueOf(Object obj) {
+		Kurs kurs = (Kurs)obj;
+		return kurs;		
+	}
+	public static Kurs[] valueOf(Object[] obj) {
+		Kurs[] kursList = new Kurs[obj.length];
+		for (int i = 0 ; i < obj.length; i++){
+			kursList[i] = Kurs.valueOf(obj[i]);
+		}
+		return kursList;
 	}
 
 }

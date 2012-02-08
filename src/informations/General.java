@@ -8,7 +8,7 @@ public class General {
 	public static Wahl wahl; 
 	public static final Admin admin = new Admin();
 	
-	public static void gen() throws Exception{
+	public static void gen() throws Exception {
 		if (wahl != null){
 			throw new Exception("Es existiert bereits eine Wahl!");
 		}

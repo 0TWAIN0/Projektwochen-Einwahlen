@@ -21,6 +21,7 @@ public class Config {
 	public static final String START_PAGE = "/login.html";
 	public static final String WAHL_ANSWER = "/answer1.html";
 	public static final String KURS_ANSWER = "/answer2.html";
+	public static final String KURS_WAHL_ANSWER = "/answer3.html";
 	public static final String LOGOUT_PAGE = "/logout.html";
 
 	public static final int MAXIMAL_KURS_GROESSE = 50;

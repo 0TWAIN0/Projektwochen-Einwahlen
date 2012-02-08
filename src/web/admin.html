@@ -31,39 +31,33 @@
 			<p><a href="%logout%">Logout</a></p>
 		</div>
 
-		<div id="Layer2" style="position:absolute;z-index:8; left: 539px; top: 191px"> 
-		 	<form action="%add%" name="form1" >
-				%hidden%
-		   		<input type="submit" value="Kurs hinzuf&uuml;gen">
-			</form>
-		</div>
-		<div id="Layer2" style="position:absolute;z-index:8; left: 539px; top: 151px"> 
-		 	<form action="gen" name="form1" >
+		<div id="Layer2" style="position:absolute; width:200px; z-index:8; left: 600px; top: 150px; background-color: #D8D8D8" > 
+		 	<br><form align="center" action="gen" name="form0" >
 				%hidden%
 		   		<input type="submit" value="Wahl generieren">
 			</form>
+			<form align="center" action="vgen" name="form1" >
+				%hidden%
+		   		<input type="submit" value="Einwahlen simulieren">
+			</form>
 		</div>
-		<div id="Layer3" style="position:absolute;z-index:8; left: 670px; top: 191px"> 
-			<form action="%change%" name="form2" >
-				%hidden%				
+		
+		<div id="Layer2" style="position:absolute; width:300px; z-index:8; left: 550px; top: 280px; background-color: #D8D8D8"> 
+		 	<br>
+			<form align="center" action="%add%" name="form2" >
+				%hidden%
+		   		<input type="submit" value="Kurs hinzuf&uuml;gen">
+			</form>
+			<form align="center" action="%change%" name="form3" >
+				%hidden%
 				<select name="changekurs">
-					<!--<option>kurs 1asdasd</option>
-			      		<option selected>kurs 2</option> -->
 					%kursliste%
+					<!--<option>Kreatives Gestalten mit textilien Materialien</option>
+			      		<option selected>kurs 2</option>-->
 		      		</select>
 		    		<input type="submit" name="change" value="Kurs &auml;ndern">
 		  	</form>
-		</div>
-
-		<div id="Layer4" style="position:absolute;z-index:9; left: 538px; top: 243px"> 
-			<form name="form3" >
-		    		<input type="submit" name="view" value="Kurs&uuml;bersicht" href="%overview%" target="_blank" onclick="return pop('%overview%','pophelp','f1,f2,f3')" >
-
-		  	</form>
-		</div>
-
-		<div id="Layer5" style="position:absolute; z-index:10; left: 538px; top: 281px"> 
-		  	<form action="%delkurs%" name="form4" >
+			<form align="center"action="%delkurs%" name="form4" >
 				%hidden%
 		    		<p>
 		      		<select id="delkurs" name="delkurs">
@@ -72,15 +66,20 @@
 				<input type="button" value="Kurs l&ouml;schen" onclick="conf('Wollen Sie diesen Kurs wirklich l%F6schen?')">
 				</p>
 		   	</form>
+			<form align="center" name="form5" >
+		    		<input type="submit" name="view" value="Kurs&uuml;bersicht" href="%overview%" target="_blank" onclick="return pop('%overview%','pophelp','f1,f2,f3')" >
+
+		  	</form>
 		</div>
-		<div id="Layer6" style="position:absolute;  z-index:11; left: 538px; top: 424px"> 
-		  	<form action="%create%" name="form5" >
+		
+		<div id="Layer6" style="position:absolute;  z-index:11; left: 590px; top: 550px"> 
+		  	<form action="%create%" name="form6" >
 				%hidden%
 		    		<input type="submit" value="Wahl erstellen">
 		  	</form>
 		</div>
-		<div id="Layer7" style="position:absolute; z-index:11; left: 650px; top: 424px"> 
-		  	<form action="%cancel%" name="form6" >
+		<div id="Layer7" style="position:absolute; z-index:11; left: 700px; top: 550px"> 
+		  	<form action="%cancel%" name="form" >
 				%hidden%
 		    		<input type="submit" name="cancel" value="Wahl abbrechen">
 		  	</form>

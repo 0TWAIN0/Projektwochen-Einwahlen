@@ -20,6 +20,171 @@ import misc.Print;
 public class Command {
 
 	// TODO THREAD SAVE!!
+	/**
+	 * Nimmt Einwahlversuche entgegen!
+	 * 
+	 * @param client
+	 * @param args
+	 * @param thread
+	 * @throws FileNotFoundException
+	 * @throws SecurityException
+	 */
+	public static void vote(Socket client, String[] args, Thread thread)
+			throws FileNotFoundException, SecurityException {
+
+		int userType = Schueler.SCHUELER;
+		;
+
+		if (args == null) {
+			throw new SecurityException(
+					"Der Benutzer konnte nicht verifiziert werden!");
+		}
+
+		// Uebergebene Informationen
+		Kurs erstwunsch = null;
+		Kurs zweitwunsch = null;
+		Kurs drittwunsch = null;
+
+		// User identifizieren
+		String[][] arguments = handleArgs(args);
+		String sessionkey = null;
+
+		for (int i = 0; i < arguments.length; i++) {
+			if (arguments[i][0].equals("sk")) {
+				sessionkey = arguments[i][1];
+			} else if (arguments[i][0].equals("first")) {
+				erstwunsch = Kurs.getKursByName(Misc.unescape(arguments[i][1]));
+			} else if (arguments[i][0].equals("sec")) {
+				zweitwunsch = Kurs.getKursByName(Misc.unescape(arguments[i][1]));
+			} else if (arguments[i][0].equals("third")) {
+				drittwunsch = Kurs.getKursByName(Misc.unescape(arguments[i][1]));
+			}
+
+		}
+
+		if (!checkSK(sessionkey, userType)) {
+			throw new SecurityException(
+					"Der Benutzer konnte nicht verifiziert werden! Falscher Sessionkey!");
+		}
+		User fuser = User.getUserBySk(sessionkey);
+		Schueler user = (Schueler) fuser;
+
+		if (args.length == 1) {
+			String inhalt = Misc.read(Config.getWebroot()
+					+ Config.KURS_WAHL_PAGE);
+			String liste = "";
+			if (General.wahl != null) {
+				Kurs[] kursListe = General.wahl.getKursListe();
+				for (int i = 0; i < kursListe.length; i++) {
+					if (i == 0) {
+						liste = liste + "<option selected>"
+								+ kursListe[i].getName() + "</option>";
+					} else {
+						liste = liste + "<option>" + kursListe[i].getName()
+								+ "</option>";
+					}
+				}
+			}
+			inhalt = inhalt.replaceAll("%options%", liste);
+			inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+					+ sessionkey);
+			inhalt = inhalt.replaceAll("%hidden%",
+					"<input type=hidden name='sk' value='" + sessionkey + "'>");
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
+
+			// Senden der Datei
+			Print.deb(thread + " Senden von: " + Config.getWebroot()
+					+ Config.KURS_WAHL_PAGE);
+			try {
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client, inhalt);
+			} catch (IOException e) {
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
+			return;
+		}
+
+		String errorMessage = "";
+
+		if (user.getErstwunsch() != null || user.getZweitwunsch() != null
+				|| user.getDrittwunsch() != null) {
+			errorMessage += "Es wurde bereits eine Wahl abgegeben!%0A";
+		} else {
+			if (erstwunsch == null || zweitwunsch == null
+					|| drittwunsch == null) {
+				errorMessage += "Es wurde keine drei W%FCnsche angegeben oder einer der W%FCnsche existiert nicht!%0A";
+			} else if (erstwunsch.equals(zweitwunsch)
+					|| erstwunsch.equals(drittwunsch)
+					|| zweitwunsch.equals(drittwunsch)) {
+				errorMessage += "Es wurde gleiche Kurse angegeben!%0A";
+			}
+		}
+		
+		if (errorMessage == ""){
+			
+			user.setErstwunsch(erstwunsch);
+			user.setZweitwunsch(zweitwunsch);
+			user.setDrittwunsch(drittwunsch);
+			
+			String inhalt = Misc.read(Config.getWebroot()
+					+ Config.KURS_WAHL_ANSWER);
+
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
+
+			// Senden der Datei
+			try {
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client, inhalt);
+			} catch (IOException e) {
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
+		}else{
+			String inhalt = Misc.read(Config.getWebroot()
+					+ Config.KURS_WAHL_PAGE);
+			String liste = "";
+			if (General.wahl != null) {
+				Kurs[] kursListe = General.wahl.getKursListe();
+				for (int i = 0; i < kursListe.length; i++) {
+					if (i == 0) {
+						liste = liste + "<option selected>"
+								+ kursListe[i].getName() + "</option>";
+					} else {
+						liste = liste + "<option>" + kursListe[i].getName()
+								+ "</option>";
+					}
+				}
+			}
+			inhalt = inhalt.replaceAll("%options%", liste);
+			inhalt = inhalt.replaceAll("%overview%", "overview?sk="
+					+ sessionkey);
+			inhalt = inhalt.replaceAll("%hidden%",
+					"<input type=hidden name='sk' value='" + sessionkey + "'>");
+			inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
+			
+			inhalt += "<script>alert(unescape('"+ errorMessage +"'));</script>";
+
+			// Senden der Datei
+			Print.deb(thread + " Senden von: " + Config.getWebroot()
+					+ Config.KURS_WAHL_PAGE);
+			try {
+				TCP.send(client, HTTP.HEADER_OK);
+				TCP.send(client, inhalt);
+			} catch (IOException e) {
+				Print.err(thread + " Fehler beim Sende an einen Client");
+			}
+		}
+
+	}
+
+	/**
+	 * Genereiert eine Wahl und Kurse
+	 * 
+	 * @param client
+	 * @param args
+	 * @param thread
+	 * @throws FileNotFoundException
+	 * @throws SecurityException
+	 */
 	public static void gen(Socket client, String[] args, Thread thread)
 			throws FileNotFoundException, SecurityException {
 		// Ueberpruefung des Sessionkeys und der anderen Argumente
@@ -39,10 +204,11 @@ public class Command {
 		if (!checkSK(sessionkey, userType)) {
 			throw new SecurityException();
 		}
-
+				
 		try {
 			General.gen();
-		} catch (Exception e) {
+		} catch (Exception e) {	
+			e.printStackTrace();
 			String inhalt = Misc.read(Config.getWebroot()
 					+ Config.SUPER_LEHRER_PAGE);
 			inhalt = inhalt.replaceAll("%add%", "create");
@@ -77,10 +243,10 @@ public class Command {
 			}
 			return;
 		}
-		
+
 		Schueler[] schuelerListe = General.wahl.getSchuelerList();
 		Lehrer[] lehrerListe = General.wahl.getLehrerList();
-		
+
 		String inhalt = Misc.read(Config.getWebroot() + Config.WAHL_ANSWER);
 		inhalt = inhalt.replaceAll("%logout%", "logout?sk=" + sessionkey);
 		inhalt = inhalt.replaceAll("%hidden%",
@@ -88,8 +254,7 @@ public class Command {
 		inhalt = inhalt.replaceAll("%action%", "admin");
 		String schuelerL = "";
 		for (int i = 0; i < schuelerListe.length; i++) {
-			schuelerL += "<tr>"
-					+ "<td align='left' style='width:150px;'>"
+			schuelerL += "<tr>" + "<td align='left' style='width:150px;'>"
 					+ schuelerListe[i].getName() + "</td>"
 					+ "<td align='left' style='width:150px;'>"
 					+ schuelerListe[i].getPasswort() + "</td></tr>";
@@ -1248,7 +1413,7 @@ public class Command {
 		Lehrer lehrer = null;
 		boolean isLehrer = false;
 		boolean isAdmin = false;
-
+		
 		// Überprüfen der Richtigkeit von Namen und Passwort
 		for (int i = 0; i < arguments.length; i++) {
 			if (arguments[i][0].equals("user")) {
@@ -1366,6 +1531,7 @@ public class Command {
 			}
 
 		}
+
 	}
 
 	/**
@@ -1614,8 +1780,7 @@ public class Command {
 				authorized = (user instanceof Lehrer)
 						|| (user instanceof Admin);
 			} else if (userType == Schueler.SCHUELER) {
-				authorized = (user instanceof Schueler)
-						|| (user instanceof Admin);
+				authorized = (user instanceof Schueler);
 			} else if (userType == Admin.ADMIN) {
 				authorized = user instanceof Admin;
 			} else if (userType == User.USER) {

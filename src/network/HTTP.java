@@ -2,7 +2,6 @@ package network;
 
 import informations.Admin;
 import informations.Lehrer;
-import informations.Schueler;
 import informations.User;
 
 import java.io.File;
@@ -41,7 +40,7 @@ public class HTTP {
 	private static final String COMMAND_START_PAGE = "/";
 	private static final String COMMAND_LOGIN = "/login";
 	private static final String COMMAND_CREATE_KURS = "/create";
-	private static final String COMMAND_VOTE = "/vote"; //TODO
+	private static final String COMMAND_VOTE = "/vote"; // TODO
 	private static final String COMMAND_CREATE_WAHL = "/createwahl";
 	private static final String COMMAND_ADMIN_INTERFACE = "/admin";
 	private static final String COMMAND_SHOW_KURSLIST = "/overview";
@@ -62,7 +61,8 @@ public class HTTP {
 
 		// Identifizierung des übergebenen Befehls
 		if (splitted[1].equals(COMMAND_START_PAGE)) {
-			Print.msg(thread + " Anfrage: Startpage von " + client.getInetAddress());
+			Print.msg(thread + " Anfrage: Startpage von "
+					+ client.getInetAddress());
 			String startPage = webroot + Config.START_PAGE;
 			try {
 				Command.allowedFileReqest(client, startPage, thread);
@@ -90,7 +90,8 @@ public class HTTP {
 					command = args[0];
 					Print.deb(thread + " Command: " + command);
 
-					// Untersuchung falls mehrere Argumente durch ein '&' getrennt
+					// Untersuchung falls mehrere Argumente durch ein '&'
+					// getrennt
 					// wurden
 					if (args[1].contains("&")) {
 						arguments = args[1].split("&");
@@ -111,7 +112,8 @@ public class HTTP {
 
 			// Reaktions auf Befehl
 			if (command.equals(COMMAND_LOGIN)) {
-				//Print.msg(thread + " Anfrage: Login von " + client.getInetAddress());
+				// Print.msg(thread + " Anfrage: Login von " +
+				// client.getInetAddress());
 				try {
 					Command.login(client, arguments, thread);
 				} catch (FileNotFoundException e) {
@@ -120,7 +122,8 @@ public class HTTP {
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if (command.equals(COMMAND_SHOW_KURSLIST)) {
-				Print.msg(thread + " Anfrage: Kursliste von " + client.getInetAddress());
+				Print.msg(thread + " Anfrage: Kursliste von "
+						+ client.getInetAddress());
 				try {
 					Command.protectedFileReqest(client, Config.getWebroot()
 							+ Config.KURS_UEBERSICHT_PAGE, arguments,
@@ -176,7 +179,8 @@ public class HTTP {
 						error(client, FILE_NOT_FOUND_ERROR, thread);
 					}
 				} else {
-					Print.msg(thread + " Anfrage: Admin Interface von " + client.getInetAddress());
+					Print.msg(thread + " Anfrage: Admin Interface von "
+							+ client.getInetAddress());
 					try {
 						Command.protectedFileReqest(client, Config.getWebroot()
 								+ Config.SUPER_LEHRER_PAGE, arguments,
@@ -220,17 +224,17 @@ public class HTTP {
 					}
 				}
 			} else if (command.equals(COMMAND_VOTE)) {
-				Print.msg(thread + " Anfrage: Einwählen von " + client.getInetAddress());
+				Print.msg(thread + " Anfrage: Einwählen von "
+						+ client.getInetAddress());
 				try {
-					Command.protectedFileReqest(client, Config.getWebroot()
-							+ Config.KURS_WAHL_PAGE, arguments,
-							Schueler.SCHUELER, thread);
+					Command.vote(client, arguments, thread);
 				} catch (SecurityException e) {
 					Print.msg(thread + " Fehlgeschlagene Verifikation!");
 					error(client, ACCESS_FORBIDDEN_ERROR, thread);
 				} catch (FileNotFoundException e) {
 					Print.err(thread + " Datei wurde nicht gefunden: "
-							+ Config.getWebroot() + Config.KURS_ERSTELLEN_PAGE);
+							+ Config.getWebroot()
+							+ Config.KURS_WAHL_PAGE);
 					error(client, FILE_NOT_FOUND_ERROR, thread);
 				}
 			} else if (command.equals(COMMAND_LOGOUT)) {
@@ -335,7 +339,9 @@ public class HTTP {
 					+ client.getInetAddress());
 			try {
 				TCP.send(client, HEADER_BAD_REQUEST);
-				TCP.send(client, "<html><h2>403 - Access Forbidden</h2><br><p>Weiter zur <a href='/'>Startseite</a>!</p></html>");
+				TCP.send(
+						client,
+						"<html><h2>403 - Access Forbidden</h2><br><p>Weiter zur <a href='/'>Startseite</a>!</p></html>");
 			} catch (IOException e) {
 				Print.err(thread + " Senden an " + client.getInetAddress()
 						+ " fehlgeschlagen!");

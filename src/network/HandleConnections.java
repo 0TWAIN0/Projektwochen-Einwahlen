@@ -60,7 +60,7 @@ public class HandleConnections implements Runnable {
 			split = empfang.split(" ");
 			if (split[0].equalsIgnoreCase("GET")) { // GET Reqest
 				http.get(client, split, Thread.currentThread());
-			} else if (split[1].equalsIgnoreCase("POST")) { // POST Request
+			} else if (split[0].equalsIgnoreCase("POST")) { // POST Request
 				// http.post(client, empfang);
 				Print.deb("POST REQEST!");
 			} else {

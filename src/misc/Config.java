@@ -29,7 +29,7 @@ public class Config {
 	public static final int MAXIMAL_JAHRGANG = 12;
 	public static final int MINIMAL_JAHRGANG = 07;
 
-	public static final boolean DEBUGING = false;
+	public static final boolean DEBUGING = true;
 	private static int port;
 	private static String webroot;
 	private static String errorPage;

@@ -185,7 +185,7 @@ public class General {
 		}
 		int kurse = schueler / 10;
 		for (int i = 1; i <= kurse; i++){
-			wahl.addKurs(new Kurs("Kurs " + i,"Beschreibung",10,07,12));
+			wahl.addKurs(new Kurs("Kurs " + i,"Beschreibung",10,07,Misc.gen(9, 12)));
 		}
 	}
 	

@@ -308,6 +308,12 @@ public class Command {
 					|| erstwunsch.equals(drittwunsch)
 					|| zweitwunsch.equals(drittwunsch)) {
 				errorMessage += "Es wurde gleiche Kurse angegeben!%0A";
+			} else if(erstwunsch.getJahrgangsberechtigungMin() > user.getJahrgang() || erstwunsch.getJahrgangsberechtigungMax() < user.getJahrgang()){
+				errorMessage += "Der Erstwunsch ist nicht f%FCr deinen Jahrgang freigegeben!%0A";
+			} else if(zweitwunsch.getJahrgangsberechtigungMin() > user.getJahrgang() || zweitwunsch.getJahrgangsberechtigungMax() < user.getJahrgang()){
+				errorMessage += "Der Zweitwunsch ist nicht f%FCr deinen Jahrgang freigegeben!%0A";
+			} else if(drittwunsch.getJahrgangsberechtigungMin() > user.getJahrgang() || drittwunsch.getJahrgangsberechtigungMax() < user.getJahrgang()){
+				errorMessage += "Der Drittwunsch ist nicht f%FCr deinen Jahrgang freigegeben!%0A";
 			}
 		}
 

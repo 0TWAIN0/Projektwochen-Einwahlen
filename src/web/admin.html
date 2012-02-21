@@ -44,11 +44,11 @@
 		
 		<div id="Layer2" style="position:absolute; width:300px; z-index:8; left: 550px; top: 280px; background-color: #D8D8D8"> 
 		 	<br>
-			<form align="center" action="%add%" name="form2" >
+			<form align="center" action="create" name="form2" >
 				%hidden%
 		   		<input type="submit" value="Kurs hinzuf&uuml;gen">
 			</form>
-			<form align="center" action="%change%" name="form3" >
+			<form align="center" action="admin" name="form3" >
 				%hidden%
 				<select name="changekurs">
 					%kursliste%
@@ -57,7 +57,7 @@
 		      		</select>
 		    		<input type="submit" name="change" value="Kurs &auml;ndern">
 		  	</form>
-			<form align="center"action="%delkurs%" name="form4" >
+			<form align="center"action="admin" name="form4" >
 				%hidden%
 		    		<p>
 		      		<select id="delkurs" name="delkurs">
@@ -73,13 +73,13 @@
 		</div>
 		
 		<div id="Layer6" style="position:absolute;  z-index:11; left: 520px; top: 550px"> 
-		  	<form action="%create%" name="form6" >
+		  	<form action="createwahl" name="form6" >
 				%hidden%
 		    		<input type="submit" value="Wahl erstellen">
 		  	</form>
 		</div>
 		<div id="Layer7" style="position:absolute; z-index:11; left: 630px; top: 550px"> 
-		  	<form action="%cancel%" name="form" >
+		  	<form action="admin" name="form" >
 				%hidden%
 		    		<input type="submit" name="cancel" value="Wahl abbrechen">
 		  	</form>

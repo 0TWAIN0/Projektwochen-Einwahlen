@@ -13,6 +13,7 @@ public class Config {
 
 	private static boolean read = false;
 	
+	//Konstanten der einzelnen Seiten
 	public static final String KURS_ERSTELLEN_PAGE = "/teacher.html";
 	public static final String KURS_UEBERSICHT_PAGE = "/overview.html";
 	public static final String KURS_WAHL_PAGE = "/vote.html";

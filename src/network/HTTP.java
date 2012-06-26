@@ -48,7 +48,7 @@ public class HTTP {
 	private static final String COMMAND_GEN = "/gen";
 	private static final String COMMAND_VGEN = "/vgen";
 	private static final String COMMAND_AUSWERTEN = "/eval";
-
+	private static final String COMMAND_USER_LIST = "/ulist";
 	/**
 	 * Bearbeitet GET-Anfrage und Antwortet.
 	 * 
@@ -269,6 +269,16 @@ public class HTTP {
 			} else if (command.equals(COMMAND_AUSWERTEN)) {
 				try {
 					Command.eval(client, arguments, thread);
+				} catch (SecurityException e) {
+					Print.msg(thread + " Fehlgeschlagene Verifikation!");
+					error(client, ACCESS_FORBIDDEN_ERROR, thread);
+				} catch (FileNotFoundException e) {
+					Print.err(thread + "Die Auswerten Seite wurde nicht gefunden!");
+					error(client, FILE_NOT_FOUND_ERROR, thread);
+				}
+			} else if (command.equals(COMMAND_USER_LIST)) {
+				try {
+					Command.userList(client, arguments, thread);
 				} catch (SecurityException e) {
 					Print.msg(thread + " Fehlgeschlagene Verifikation!");
 					error(client, ACCESS_FORBIDDEN_ERROR, thread);

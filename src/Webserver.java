@@ -38,6 +38,13 @@ public class Webserver {
 			Print.err("Fehler beim Lesen der Konfigurationsdatei und der AllowedFiles Liste!");
 		}
 
+		//Argumente Überprüfen
+		for (int i = 0; i < args.length; i++){
+			if (args[i].equals("--debug")){
+				Config.DEBUGING = true;
+			}
+		}
+		
 		// Der Port an dem der Server lauschen soll
 		final int port = Config.getPort();
 

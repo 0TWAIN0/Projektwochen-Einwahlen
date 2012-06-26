@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>Projektwochen Einwahlen - User Liste</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	</head>
+
+	<body bgcolor="#FFFFFF">
+		
+
+		<div id="Layer2" style="position:absolute; width:599px; height:89px; z-index:7; left: 400px; top: 35px"> 
+			<p align="center"><font size="+7">User Liste</font></p>
+		</div>
+		<div id="Layer1" style="position:absolute;left: 850px;"> 
+			<p><a href="%logout%">Logout</a></p>
+		</div>
+
+
+		<div id="Layer6" style="position:absolute; width:599px; height:89px; z-index:12; left: 400px; top: 167px"> 
+			<form action="admin" name="form1" >
+				%hidden%
+				<p align="center"><input type="submit" value="Zur&uuml;ck zur Adminoberfl&auml;che"></p>
+			</form>
+			<br><br>
+			<p ><h3 align="center">Sch&uuml;ler Liste!</h3></p>
+			<table border="1" align="center">
+				<thead>
+					<tr>
+						<th align="center" style="width:150px;">Name</th>
+						<th align="center" style="width:150px;">Passwort</th>
+						<th align="center" style="width:150px;">Erstwunsch</th>
+						<th align="center" style="width:150px;">Zweitwunsch</th>
+						<th align="center" style="width:150px;">Drittwunsch</th>
+						<th align="center" style="width:150px;">Ergebnis</th>
+					</tr>
+				</thead>
+				<!--<tr>
+					<td align="left" style="width:150px;"> </td>
+					<td align="left" style="width:150px;"> </td>
+					<td align="left" style="width:150px;"> </td>
+					<td align="left" style="width:150px;"> </td>
+					<td align="left" style="width:150px;"> </td>
+					<td align="left" style="width:150px;"> </td>
+				</tr>-->
+				%schueler%
+			</table>
+			<br>
+			<p ><h3 align="center">Lehrer Liste!</h3></p>
+			<table border="1" align="center">
+				<thead>
+					<tr>
+						<th align="center" style="width:150px;">Name</th>
+						<th align="center" style="width:150px;">Passwort</th>
+					</tr>
+				</thead>
+				<!--<tr>
+					<td align="left" style="width:150px;"> </td>
+					<td align="left" style="width:150px;"> </td>
+				</tr>-->
+				%lehrer%
+			</table>
+		</div>
+		</div>
+	</body>
+</html>

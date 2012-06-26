@@ -22,6 +22,40 @@ import misc.Print;
 public class Command {
 
 	// TODO THREAD SAVE!!
+
+	public static void userList(Socket client, String[] args, Thread thread)
+			throws FileNotFoundException, SecurityException {
+
+		// Ueberpruefung des Sessionkeys
+		if (args == null) {
+			throw new SecurityException(
+					"Der Benutzer konnte nicht verifiziert werden!");
+		}
+		String[][] arguments = handleArgs(args);
+		String sessionkey = null;
+		int userType = Admin.ADMIN;
+
+		for (int i = 0; i < arguments.length; i++) {
+			if (arguments[i][0].equals("sk")) {
+				sessionkey = arguments[i][1];
+			}
+		}
+		if (!checkSK(sessionkey, userType)) {
+			throw new SecurityException();
+		}
+	
+		// Website zurückliefern
+		String inhalt = Website.userListPage(sessionkey);
+
+		try {
+			TCP.send(client, HTTP.HEADER_OK);
+			TCP.send(client, inhalt);
+		} catch (IOException e) {
+			Print.err(thread + " Fehler beim Sende an einen Client");
+		}
+		
+	}
+
 	/**
 	 * Auswertung
 	 * 
@@ -41,7 +75,7 @@ public class Command {
 		}
 		String[][] arguments = handleArgs(args);
 		String sessionkey = null;
-		int userType = User.USER;
+		int userType = Admin.ADMIN;
 
 		for (int i = 0; i < arguments.length; i++) {
 			if (arguments[i][0].equals("sk")) {
@@ -1044,8 +1078,8 @@ public class Command {
 		// User identifizieren
 		String[][] arguments = handleArgs(args);
 		String sessionkey = null;
-		
-		//Variablen für Eingaben
+
+		// Variablen für Eingaben
 		String name = "";
 		int size = 0;
 		int min = 0;
@@ -1054,8 +1088,8 @@ public class Command {
 		boolean change = false;
 		String changeKurs = "";
 		Kurs kursToChange = null;
-		
-		//Argumente analysieren
+
+		// Argumente analysieren
 		for (int i = 0; i < arguments.length; i++) {
 			if (arguments[i][0].equals("sk")) {
 				sessionkey = arguments[i][1];
@@ -1086,13 +1120,13 @@ public class Command {
 				changeKurs = Misc.unescape(arguments[i][1]);
 			}
 		}
-		
-		//User verifizieren
+
+		// User verifizieren
 		if (!checkSK(sessionkey, userType)) {
 			throw new SecurityException(
 					"Der Benutzer konnte nicht verifiziert werden! Falscher Sessionkey!");
 		}
-		//Admin erkennen
+		// Admin erkennen
 		User user = User.getUserBySk(sessionkey);
 		if (user instanceof Admin) {
 			userType = Admin.ADMIN;
@@ -1165,7 +1199,7 @@ public class Command {
 				break;
 			}
 		}
-		
+
 		// Reaktion wenn Fehler gefunden wurde
 		if (!errorMessage.equals("")) {
 			errorMessage = "Es wurde ein Fehler in den angegebenen Daten gefunden!%0A%0A"
@@ -1187,7 +1221,7 @@ public class Command {
 			} catch (IOException e) {
 				Print.err(thread + " Fehler beim Sende an einen Client");
 			}
-		} 
+		}
 		// Wenn kein Fehler gefunden wurde
 		else {
 
@@ -1225,8 +1259,8 @@ public class Command {
 				}
 				Print.msg(thread + " Kurs wurde geändert. Name: " + name
 						+ " von " + uname);
-				
-				//Kurs ändern
+
+				// Kurs ändern
 				kursToChange.setName(name);
 				kursToChange.setBeschreibung(description);
 				kursToChange.setKursgroesse(size);
@@ -1247,7 +1281,6 @@ public class Command {
 		}
 	}
 
-	
 	/**
 	 * Führt Login aus.
 	 * 
@@ -1268,19 +1301,19 @@ public class Command {
 					thread);
 			return;
 		}
-		
-		//Variablen für EIngaben erstellen
+
+		// Variablen für EIngaben erstellen
 		String[][] arguments = handleArgs(args);
 		String username = "";
 		String passwort = "";
-		
+
 		boolean login = false;
 		Schueler schueler = null;
 		Lehrer lehrer = null;
 		boolean isLehrer = false;
 		boolean isAdmin = false;
 
-		//Rausfiltern vom Username und dem Passwort
+		// Rausfiltern vom Username und dem Passwort
 		for (int i = 0; i < arguments.length; i++) {
 			if (arguments[i][0].equals("user")) {
 				username = Misc.unescape(arguments[i][1]);
@@ -1288,7 +1321,7 @@ public class Command {
 				passwort = Misc.unescape(arguments[i][1]);
 			}
 		}
-		
+
 		// Überprüfen der Richtigkeit von Namen und Passwort
 		if (!username.equals("") && !passwort.equals("")) {
 
@@ -1399,7 +1432,6 @@ public class Command {
 
 	}
 
-	
 	/**
 	 * Anfragen auf geschuetzte Seiten
 	 * 
@@ -1475,7 +1507,6 @@ public class Command {
 		}
 	}
 
-	
 	/**
 	 * Liest die Datei ein und sendet Antwort an Client
 	 * 
@@ -1495,7 +1526,7 @@ public class Command {
 		// Einlesen der Datei
 		if (filePath.equals(Config.getWebroot() + Config.START_PAGE)) {
 			inhalt = Website.loginPage("", "");
-		}else {
+		} else {
 			inhalt = Misc.read(filePath);
 		}
 
@@ -1523,7 +1554,6 @@ public class Command {
 		return arguments;
 	}
 
-	
 	private static boolean checkSK(String sessionkey, int userType) {
 		if (sessionkey == null) {
 			return false;
